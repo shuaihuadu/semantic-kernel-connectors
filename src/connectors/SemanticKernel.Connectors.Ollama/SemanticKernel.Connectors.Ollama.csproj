@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>IdeaTech.SemanticKernel.Connectors.Ollama</AssemblyName>
+		<RootNamespace>$(AssemblyName)</RootNamespace>
+		<TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<VersionSuffix>alpha</VersionSuffix>
+		<LangVersion>latest</LangVersion>
+		<NoWarn>$(NoWarn);SKEXP0001,SKEXP0070</NoWarn>
+	</PropertyGroup>
+
+
+	<Import Project="$(SolutionDir)/nuget/nuget-package.props" />
+	<Import Project="$(SolutionDir)/src/InternalUtilities/src/InternalUtilities.props" />
+	
+	<PropertyGroup>
+		<Title>Semantic Kernel - Ollama Connectors</Title>
+		<Description>Semantic Kernel connectors for Ollama. Contains generation and embedding services.</Description>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+	
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.14.1" />
+	  <PackageReference Include="Ollama.NET" Version="1.0.4" />
+	</ItemGroup>
+
+</Project>
