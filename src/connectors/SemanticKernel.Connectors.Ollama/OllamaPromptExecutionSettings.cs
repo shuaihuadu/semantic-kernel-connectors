@@ -1,9 +1,4 @@
-﻿using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 /// <summary>
 /// Ollama Execution Settings.

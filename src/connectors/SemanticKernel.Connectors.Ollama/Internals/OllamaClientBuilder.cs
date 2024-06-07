@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using Ollama.Core;
-
-namespace Microsoft.SemanticKernel;
+﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 internal static partial class OllamaClientBuilder
 {
-    internal static OllamaClient CreateOllamaClient(HttpClient? httpClient, string? endpoint, ILoggerFactory? loggerFactory = null)
+    internal static OllamaClient CreateOllamaClient(HttpClient? httpClient, Uri? endpoint, ILoggerFactory? loggerFactory = null)
     {
         Verify.ValidateHttpClientAndEndpoint(httpClient, endpoint);
 
@@ -19,22 +16,17 @@ internal static partial class OllamaClientBuilder
         }
     }
 
-    internal static string GetOllamaClientEndpointUrl(HttpClient? httpClient, string? endpoint)
+    internal static Uri GetOllamaClientEndpoint(HttpClient? httpClient, Uri? endpoint)
     {
         Verify.ValidateHttpClientAndEndpoint(httpClient, endpoint);
 
         if (!string.IsNullOrEmpty(httpClient?.BaseAddress?.AbsoluteUri))
         {
-            return httpClient!.BaseAddress.AbsoluteUri;
+            return httpClient!.BaseAddress;
         }
         else
         {
             return endpoint!;
         }
-    }
-
-    internal static Uri GetOllamaClientEndpoint(HttpClient? httpClient, string? endpoint)
-    {
-        return new Uri(GetOllamaClientEndpointUrl(httpClient, endpoint));
     }
 }

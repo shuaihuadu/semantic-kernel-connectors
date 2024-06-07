@@ -1,15 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Diagnostics;
-using Microsoft.SemanticKernel.TextGeneration;
-using Ollama.Core;
-using Ollama.Core.Models;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Text;
-
-namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 /// <summary>
 /// Ollama text generation service.
@@ -19,12 +8,10 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
     private const string ModelProvider = "ollama";
     private Dictionary<string, object?> AttributesInternal { get; } = [];
 
-    private readonly string? _endpoint;
+    private readonly Uri? _endpoint;
     private readonly HttpClient? _httpClient;
     private readonly string _model;
     private readonly ILoggerFactory? _loggerFactory;
-    private readonly ILogger _logger;
-    private Uri Endpoint { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OllamaTextGenerationService"/> class.
@@ -35,7 +22,7 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     public OllamaTextGenerationService(
         string model,
-        string? endpoint = null,
+        Uri? endpoint = null,
         HttpClient? httpClient = null,
         ILoggerFactory? loggerFactory = null)
     {
@@ -47,10 +34,24 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
         this._model = model;
         this._httpClient = httpClient;
         this._loggerFactory = loggerFactory;
-        this._logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLogger.Instance;
+        this._endpoint = OllamaClientBuilder.GetOllamaClientEndpoint(httpClient, endpoint);
 
-        this.Endpoint = OllamaClientBuilder.GetOllamaClientEndpoint(httpClient, endpoint);
-        this._endpoint = this.Endpoint.AbsoluteUri;
+        this.AddAttribute(AIServiceExtensions.ModelIdKey, model);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OllamaTextGenerationService"/> class.
+    /// </summary>
+    /// <param name="model">The model name.</param>
+    /// <param name="endpoint">The uri string endpoint including the port where Ollama server is hosted</param>
+    /// <param name="httpClient">Optional HTTP client to be used for communication with the Ollama API.</param>
+    /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
+    public OllamaTextGenerationService(
+        string model,
+        string? endpoint = null,
+        HttpClient? httpClient = null,
+        ILoggerFactory? loggerFactory = null) : this(model, string.IsNullOrWhiteSpace(endpoint) ? null : new Uri(endpoint), httpClient, loggerFactory)
+    {
     }
 
     /// <inheritdoc />
@@ -63,7 +64,7 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
 
         OllamaPromptExecutionSettings ollamaPromptExecutionSettings = OllamaPromptExecutionSettings.FromExecutionSettings(executionSettings);
 
-        using Activity? activity = ModelDiagnostics.StartCompletionActivity(this.Endpoint, model, ModelProvider, prompt, ollamaPromptExecutionSettings);
+        using Activity? activity = ModelDiagnostics.StartCompletionActivity(this._endpoint, model, ModelProvider, prompt, ollamaPromptExecutionSettings);
 
         StreamingResponse<GenerateCompletionResponse> response;
 
@@ -124,7 +125,7 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
 
         OllamaPromptExecutionSettings ollamaPromptExecutionSettings = OllamaPromptExecutionSettings.FromExecutionSettings(executionSettings);
 
-        using Activity? activity = ModelDiagnostics.StartCompletionActivity(this.Endpoint, model, ModelProvider, prompt, ollamaPromptExecutionSettings);
+        using Activity? activity = ModelDiagnostics.StartCompletionActivity(this._endpoint, model, ModelProvider, prompt, ollamaPromptExecutionSettings);
 
         GenerateCompletionResponse response;
 
@@ -132,7 +133,7 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
         {
             using OllamaClient client = OllamaClientBuilder.CreateOllamaClient(this._httpClient, this._endpoint, this._loggerFactory);
 
-            response = await client.GenerateCompletionAsync(CreateGenerateCompletionOptions(model, prompt, ollamaPromptExecutionSettings));
+            response = await client.GenerateCompletionAsync(CreateGenerateCompletionOptions(model, prompt, ollamaPromptExecutionSettings), cancellationToken);
         }
         catch (Exception ex) when (activity is not null)
         {
@@ -169,6 +170,14 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
                 TopP = ollamaPromptExecutionSettings.TopP
             }
         };
+    }
+
+    internal void AddAttribute(string key, string? value)
+    {
+        if (!string.IsNullOrEmpty(value))
+        {
+            this.AttributesInternal.Add(key, value);
+        }
     }
 
     private static StreamingTextContent GetStreamingTextContentFromStreamingResponse(GenerateCompletionResponse response) => new(text: response.Response, modelId: response.Model, innerContent: response);
