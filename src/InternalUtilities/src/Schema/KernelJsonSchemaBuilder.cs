@@ -1,11 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using System;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
 using JsonSchemaMapper;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization.Metadata;
 
 namespace Microsoft.SemanticKernel;
 
@@ -17,6 +15,7 @@ namespace Microsoft.SemanticKernel;
 // 2) Check when the schema is being used (e.g. function calling) whether the JSO being used is equivalent to
 //    whichever was used to build the schema, and if it's not, generate a new schema for that JSO
 
+[ExcludeFromCodeCoverage]
 internal static class KernelJsonSchemaBuilder
 {
     private static readonly JsonSerializerOptions s_options = CreateDefaultOptions();

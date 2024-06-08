@@ -28,14 +28,11 @@ internal static class ChatMessageExtensions
 
         foreach (var item in message.Items)
         {
-            if (item is ImageContent)
+            if (item is ImageContent imageContent
+                && imageContent is not null
+                && imageContent.Data is not null)
             {
-                var imageContent = item as ImageContent;
-
-                if (imageContent is not null && imageContent.Data is not null)
-                {
-                    result.Add(Convert.ToBase64String(imageContent.Data.Value.Span.ToArray()));
-                }
+                result.Add(Convert.ToBase64String(imageContent.Data.Value.Span.ToArray()));
             }
         }
 

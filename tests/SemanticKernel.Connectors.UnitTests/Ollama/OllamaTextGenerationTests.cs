@@ -16,11 +16,24 @@ public sealed class OllamaTextGenerationTests : IDisposable
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void ConstructorWorksCorrectly(bool includeLoggerFactory)
+    public void ConstructorWithUriStringWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaTextGenerationService ollamaTextGenerationService = includeLoggerFactory
             ? new OllamaTextGenerationService("model", "http://localhost", loggerFactory: this._mockLoggerFactory.Object)
             : new OllamaTextGenerationService("model", "http://localhost");
+
+        Assert.NotNull(ollamaTextGenerationService);
+        Assert.Equal("model", ollamaTextGenerationService.Attributes["ModelId"]);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ConstructorWithUriWorksCorrectly(bool includeLoggerFactory)
+    {
+        OllamaTextGenerationService ollamaTextGenerationService = includeLoggerFactory
+            ? new OllamaTextGenerationService("model", new Uri("http://localhost"), loggerFactory: this._mockLoggerFactory.Object)
+            : new OllamaTextGenerationService("model", new Uri("http://localhost"));
 
         Assert.NotNull(ollamaTextGenerationService);
         Assert.Equal("model", ollamaTextGenerationService.Attributes["ModelId"]);

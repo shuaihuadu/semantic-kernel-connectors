@@ -8,6 +8,7 @@
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
 		<LangVersion>latest</LangVersion>
+		<NoWarn>$(NoWarn);SKEXP0001</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

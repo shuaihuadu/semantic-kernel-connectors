@@ -1,6 +1,4 @@
-﻿
-
-namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 /// <summary>
 /// Ollama chat completion service.
@@ -16,10 +14,8 @@ public sealed class OllamaChatCompletionService : IChatCompletionService
     private readonly string _model;
     private readonly ILoggerFactory? _loggerFactory;
 
-
     /// <inheritdoc />
     public IReadOnlyDictionary<string, object?> Attributes => this.AttributesInternal;
-
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OllamaTextGenerationService"/> class.
@@ -44,6 +40,21 @@ public sealed class OllamaChatCompletionService : IChatCompletionService
         this._endpoint = OllamaClientBuilder.GetOllamaClientEndpoint(httpClient, endpoint);
 
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OllamaChatCompletionService"/> class.
+    /// </summary>
+    /// <param name="model">The model name.</param>
+    /// <param name="endpoint">The uri string endpoint including the port where Ollama server is hosted</param>
+    /// <param name="httpClient">Optional HTTP client to be used for communication with the Ollama API.</param>
+    /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
+    public OllamaChatCompletionService(
+        string model,
+        string? endpoint = null,
+        HttpClient? httpClient = null,
+        ILoggerFactory? loggerFactory = null) : this(model, string.IsNullOrWhiteSpace(endpoint) ? null : new Uri(endpoint), httpClient, loggerFactory)
+    {
     }
 
     /// <inheritdoc />
