@@ -2,6 +2,7 @@
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.SemanticKernel;
+global using Microsoft.SemanticKernel.ChatCompletion;
 global using Microsoft.SemanticKernel.Diagnostics;
 global using Microsoft.SemanticKernel.Http;
 global using Microsoft.SemanticKernel.Services;

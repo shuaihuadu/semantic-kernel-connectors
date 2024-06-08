@@ -1,9 +1,11 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿
+
+namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 /// <summary>
-/// Ollama text generation service.
+/// Ollama chat completion service.
 /// </summary>
-public sealed class OllamaTextGenerationService : ITextGenerationService
+public sealed class OllamaChatCompletionService : IChatCompletionService
 {
     private const string ModelProvider = "ollama";
 
@@ -14,8 +16,10 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
     private readonly string _model;
     private readonly ILoggerFactory? _loggerFactory;
 
+
     /// <inheritdoc />
     public IReadOnlyDictionary<string, object?> Attributes => this.AttributesInternal;
+
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OllamaTextGenerationService"/> class.
@@ -24,7 +28,7 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
     /// <param name="endpoint">The uri endpoint including the port where Ollama server is hosted</param>
     /// <param name="httpClient">Optional HTTP client to be used for communication with the Ollama API.</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaTextGenerationService(
+    public OllamaChatCompletionService(
         string model,
         Uri? endpoint = null,
         HttpClient? httpClient = null,
@@ -42,38 +46,23 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="OllamaTextGenerationService"/> class.
-    /// </summary>
-    /// <param name="model">The model name.</param>
-    /// <param name="endpoint">The uri string endpoint including the port where Ollama server is hosted</param>
-    /// <param name="httpClient">Optional HTTP client to be used for communication with the Ollama API.</param>
-    /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaTextGenerationService(
-        string model,
-        string? endpoint = null,
-        HttpClient? httpClient = null,
-        ILoggerFactory? loggerFactory = null) : this(model, string.IsNullOrWhiteSpace(endpoint) ? null : new Uri(endpoint), httpClient, loggerFactory)
-    {
-    }
-
     /// <inheritdoc />
-    public async IAsyncEnumerable<StreamingTextContent> GetStreamingTextContentsAsync(string prompt, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<StreamingChatMessageContent> GetStreamingChatMessageContentsAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         string model = executionSettings?.ModelId ?? this._model;
 
         OllamaPromptExecutionSettings ollamaPromptExecutionSettings = OllamaPromptExecutionSettings.FromExecutionSettings(executionSettings);
         ollamaPromptExecutionSettings.ModelId ??= this._model;
 
-        using Activity? activity = ModelDiagnostics.StartCompletionActivity(this._endpoint, model, ModelProvider, prompt, ollamaPromptExecutionSettings);
+        using Activity? activity = ModelDiagnostics.StartCompletionActivity(this._endpoint, model, ModelProvider, chatHistory, ollamaPromptExecutionSettings);
 
-        StreamingResponse<GenerateCompletionResponse> response;
+        StreamingResponse<ChatCompletionResponse> response;
 
         try
         {
             using OllamaClient client = OllamaClientBuilder.CreateOllamaClient(this._httpClient, this._endpoint, this._loggerFactory);
 
-            response = await client.GenerateCompletionStreamingAsync(CreateGenerateCompletionOptions(model, prompt, ollamaPromptExecutionSettings), cancellationToken).ConfigureAwait(false);
+            response = await client.ChatCompletionStreamingAsync(CreateChatCompletionOptions(model, chatHistory, ollamaPromptExecutionSettings), cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (activity is not null)
         {
@@ -81,9 +70,9 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
             throw;
         }
 
-        ConfiguredCancelableAsyncEnumerable<GenerateCompletionResponse>.Enumerator responseEnumerator = response.ConfigureAwait(false).GetAsyncEnumerator();
+        ConfiguredCancelableAsyncEnumerable<ChatCompletionResponse>.Enumerator responseEnumerator = response.ConfigureAwait(false).GetAsyncEnumerator();
 
-        List<StreamingTextContent>? streamedContents = activity is not null ? [] : null;
+        List<StreamingChatMessageContent>? streamedContents = activity is not null ? [] : null;
 
         try
         {
@@ -102,9 +91,9 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
                     throw;
                 }
 
-                GenerateCompletionResponse currentResponse = responseEnumerator.Current;
+                ChatCompletionResponse currentResponse = responseEnumerator.Current;
 
-                StreamingTextContent content = GetStreamingTextContentFromResponse(currentResponse);
+                StreamingChatMessageContent content = GetStreamingChatMessageContentFromResponse(currentResponse);
 
                 streamedContents?.Add(content);
 
@@ -119,22 +108,22 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
     }
 
     /// <inheritdoc />
-    public async Task<IReadOnlyList<TextContent>> GetTextContentsAsync(string prompt, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<ChatMessageContent>> GetChatMessageContentsAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)
     {
         string model = executionSettings?.ModelId ?? this._model;
 
         OllamaPromptExecutionSettings ollamaPromptExecutionSettings = OllamaPromptExecutionSettings.FromExecutionSettings(executionSettings);
         ollamaPromptExecutionSettings.ModelId ??= this._model;
 
-        using Activity? activity = ModelDiagnostics.StartCompletionActivity(this._endpoint, model, ModelProvider, prompt, ollamaPromptExecutionSettings);
+        using Activity? activity = ModelDiagnostics.StartCompletionActivity(this._endpoint, model, ModelProvider, chatHistory, ollamaPromptExecutionSettings);
 
-        GenerateCompletionResponse response;
+        ChatCompletionResponse response;
 
         try
         {
             using OllamaClient client = OllamaClientBuilder.CreateOllamaClient(this._httpClient, this._endpoint, this._loggerFactory);
 
-            response = await client.GenerateCompletionAsync(CreateGenerateCompletionOptions(model, prompt, ollamaPromptExecutionSettings), cancellationToken).ConfigureAwait(false);
+            response = await client.ChatCompletionAsync(CreateChatCompletionOptions(model, chatHistory, ollamaPromptExecutionSettings), cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (activity is not null)
         {
@@ -142,22 +131,21 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
             throw;
         }
 
-        TextContent content = GetTextContentFromResponse(response);
+        ChatMessageContent content = GetChatMessageContentFromResponse(response);
 
         activity?.SetCompletionResponse([content]);
 
         return [content];
     }
 
-    private static GenerateCompletionOptions CreateGenerateCompletionOptions(string model, string prompt, OllamaPromptExecutionSettings ollamaPromptExecutionSettings)
+    private static ChatCompletionOptions CreateChatCompletionOptions(string model, ChatHistory chatHistory, OllamaPromptExecutionSettings ollamaPromptExecutionSettings)
     {
-        return new GenerateCompletionOptions
+        return new ChatCompletionOptions
         {
             Model = model,
-            Prompt = prompt,
+            Messages = [.. chatHistory.Select(message => message.ToChatMessageRole())],
             Format = ollamaPromptExecutionSettings.Format,
             KeepAlive = ollamaPromptExecutionSettings.KeepAlive,
-            System = ollamaPromptExecutionSettings.SystemPrompt,
             Options = new ParameterOptions
             {
                 NumCtx = ollamaPromptExecutionSettings.MaxTokens,
@@ -172,7 +160,20 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
         };
     }
 
-    private static StreamingTextContent GetStreamingTextContentFromResponse(GenerateCompletionResponse response) => new(text: response.Response, modelId: response.Model, innerContent: response);
 
-    private static TextContent GetTextContentFromResponse(GenerateCompletionResponse response) => new(text: response.Response, modelId: response.Model, response, Encoding.UTF8);
+    private static StreamingChatMessageContent GetStreamingChatMessageContentFromResponse(ChatCompletionResponse response) => new(
+        response.Message?.Role is not null ? new AuthorRole(response.Message.Role.Value.Label) : null,
+        response.Message?.Content,
+        response,
+        0,
+        response.Model,
+        Encoding.UTF8);
+
+    private static ChatMessageContent GetChatMessageContentFromResponse(ChatCompletionResponse response) => new(
+        response.Message?.Role is not null ? new AuthorRole(response.Message.Role.Value.Label) : AuthorRole.Assistant,
+        response.Message?.Content,
+        response.Model,
+        response,
+        Encoding.UTF8);
+
 }
