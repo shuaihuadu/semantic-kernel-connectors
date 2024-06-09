@@ -43,11 +43,9 @@ public sealed class OllamaTextEmbeddingGenerationServiceTests : IDisposable
     [InlineData(false)]
     public void ConstructorWithHttpClientWorksCorrectly(bool includeLoggerFactory)
     {
-        this._httpClient.BaseAddress = TestConstants.FakeUri;
-
         OllamaTextEmbeddingGenerationService ollamaTextGenerationService = includeLoggerFactory
-            ? new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, this._httpClient, loggerFactory: this._mockLoggerFactory.Object)
-            : new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, this._httpClient);
+    ? new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeHttpClient, loggerFactory: this._mockLoggerFactory.Object)
+    : new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeHttpClient);
 
         Assert.NotNull(ollamaTextGenerationService);
         Assert.Equal(TestConstants.FakeModel, ollamaTextGenerationService.Attributes["ModelId"]);
