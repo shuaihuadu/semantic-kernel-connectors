@@ -187,7 +187,16 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
         };
     }
 
-    private static StreamingTextContent GetStreamingTextContentFromResponse(GenerateCompletionResponse response) => new(text: response.Response, modelId: response.Model, innerContent: response);
+    private static StreamingTextContent GetStreamingTextContentFromResponse(GenerateCompletionResponse response) => new(
+        text: response.Response,
+        modelId: response.Model,
+        innerContent: response,
+        metadata: new OllamaTextGenerationMetadata(response));
 
-    private static TextContent GetTextContentFromResponse(GenerateCompletionResponse response) => new(text: response.Response, modelId: response.Model, response, Encoding.UTF8);
+    private static TextContent GetTextContentFromResponse(GenerateCompletionResponse response) => new(
+        text: response.Response,
+        modelId: response.Model,
+        response,
+        Encoding.UTF8,
+        new OllamaTextGenerationMetadata(response));
 }

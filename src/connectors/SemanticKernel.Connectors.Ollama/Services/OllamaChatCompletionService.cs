@@ -187,18 +187,19 @@ public sealed class OllamaChatCompletionService : IChatCompletionService
 
 
     private static StreamingChatMessageContent GetStreamingChatMessageContentFromResponse(ChatCompletionResponse response) => new(
-        response.Message?.Role is not null ? new AuthorRole(response.Message.Role.Value.Label) : null,
-        response.Message?.Content,
-        response,
-        0,
-        response.Model,
-        Encoding.UTF8);
+        role: response.Message?.Role is not null ? new AuthorRole(response.Message.Role.Value.Label) : null,
+        content: response.Message?.Content,
+        innerContent: response,
+        modelId: response.Model,
+        encoding: Encoding.UTF8,
+        metadata: new OllamaChatGenerationMetadata(response));
 
     private static ChatMessageContent GetChatMessageContentFromResponse(ChatCompletionResponse response) => new(
-        response.Message?.Role is not null ? new AuthorRole(response.Message.Role.Value.Label) : AuthorRole.Assistant,
-        response.Message?.Content,
-        response.Model,
-        response,
-        Encoding.UTF8);
+        role: response.Message?.Role is not null ? new AuthorRole(response.Message.Role.Value.Label) : AuthorRole.Assistant,
+        content: response.Message?.Content,
+        modelId: response.Model,
+        innerContent: response,
+        encoding: Encoding.UTF8,
+        metadata: new OllamaChatGenerationMetadata(response));
 
 }
