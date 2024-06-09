@@ -22,7 +22,7 @@
 	
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.14.1" />
-	  <PackageReference Include="Ollama.NET" Version="1.0.4" />
+	  <PackageReference Include="Ollama.NET" Version="1.0.5" />
 	</ItemGroup>
 
 </Project>

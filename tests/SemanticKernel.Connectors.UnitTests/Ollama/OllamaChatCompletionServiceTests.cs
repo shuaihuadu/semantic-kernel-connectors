@@ -19,11 +19,11 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
     public void ConstructorWithUriStringWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaChatCompletionService ollamaChatCompletionService = includeLoggerFactory
-            ? new OllamaChatCompletionService("model", "http://localhost", loggerFactory: this._mockLoggerFactory.Object)
-            : new OllamaChatCompletionService("model", "http://localhost");
+            ? new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeUriString, loggerFactory: this._mockLoggerFactory.Object)
+            : new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeUriString);
 
         Assert.NotNull(ollamaChatCompletionService);
-        Assert.Equal("model", ollamaChatCompletionService.Attributes["ModelId"]);
+        Assert.Equal(TestConstants.FakeModel, ollamaChatCompletionService.Attributes["ModelId"]);
     }
 
     [Theory]
@@ -32,11 +32,26 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
     public void ConstructorWithUriWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaChatCompletionService ollamaTextGenerationService = includeLoggerFactory
-            ? new OllamaChatCompletionService("model", new Uri("http://localhost"), loggerFactory: this._mockLoggerFactory.Object)
-            : new OllamaChatCompletionService("model", new Uri("http://localhost"));
+            ? new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeUri, loggerFactory: this._mockLoggerFactory.Object)
+            : new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeUri);
 
         Assert.NotNull(ollamaTextGenerationService);
-        Assert.Equal("model", ollamaTextGenerationService.Attributes["ModelId"]);
+        Assert.Equal(TestConstants.FakeModel, ollamaTextGenerationService.Attributes["ModelId"]);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ConstructorWithHttpClientWorksCorrectly(bool includeLoggerFactory)
+    {
+        this._httpClient.BaseAddress = TestConstants.FakeUri;
+
+        OllamaChatCompletionService ollamaTextGenerationService = includeLoggerFactory
+            ? new OllamaChatCompletionService(TestConstants.FakeModel, this._httpClient, loggerFactory: this._mockLoggerFactory.Object)
+            : new OllamaChatCompletionService(TestConstants.FakeModel, this._httpClient);
+
+        Assert.NotNull(ollamaTextGenerationService);
+        Assert.Equal(TestConstants.FakeModel, ollamaTextGenerationService.Attributes["ModelId"]);
     }
 
     public void Dispose()

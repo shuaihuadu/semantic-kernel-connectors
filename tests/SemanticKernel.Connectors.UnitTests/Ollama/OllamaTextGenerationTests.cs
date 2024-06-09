@@ -19,11 +19,11 @@ public sealed class OllamaTextGenerationTests : IDisposable
     public void ConstructorWithUriStringWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaTextGenerationService ollamaTextGenerationService = includeLoggerFactory
-            ? new OllamaTextGenerationService("model", "http://localhost", loggerFactory: this._mockLoggerFactory.Object)
-            : new OllamaTextGenerationService("model", "http://localhost");
+            ? new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeUriString, loggerFactory: this._mockLoggerFactory.Object)
+            : new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeUriString);
 
         Assert.NotNull(ollamaTextGenerationService);
-        Assert.Equal("model", ollamaTextGenerationService.Attributes["ModelId"]);
+        Assert.Equal(TestConstants.FakeModel, ollamaTextGenerationService.Attributes["ModelId"]);
     }
 
     [Theory]
@@ -32,11 +32,26 @@ public sealed class OllamaTextGenerationTests : IDisposable
     public void ConstructorWithUriWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaTextGenerationService ollamaTextGenerationService = includeLoggerFactory
-            ? new OllamaTextGenerationService("model", new Uri("http://localhost"), loggerFactory: this._mockLoggerFactory.Object)
-            : new OllamaTextGenerationService("model", new Uri("http://localhost"));
+            ? new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeUri, loggerFactory: this._mockLoggerFactory.Object)
+            : new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeUri);
 
         Assert.NotNull(ollamaTextGenerationService);
         Assert.Equal("model", ollamaTextGenerationService.Attributes["ModelId"]);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ConstructorWithHttpClientWorksCorrectly(bool includeLoggerFactory)
+    {
+        this._httpClient.BaseAddress = TestConstants.FakeUri;
+
+        OllamaTextGenerationService ollamaTextGenerationService = includeLoggerFactory
+            ? new OllamaTextGenerationService(TestConstants.FakeModel, this._httpClient, loggerFactory: this._mockLoggerFactory.Object)
+            : new OllamaTextGenerationService(TestConstants.FakeModel, this._httpClient);
+
+        Assert.NotNull(ollamaTextGenerationService);
+        Assert.Equal(TestConstants.FakeModel, ollamaTextGenerationService.Attributes["ModelId"]);
     }
 
     public void Dispose()

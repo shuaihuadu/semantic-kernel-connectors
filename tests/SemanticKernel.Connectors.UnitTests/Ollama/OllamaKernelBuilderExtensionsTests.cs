@@ -1,6 +1,4 @@
-﻿using Microsoft.SemanticKernel.Embeddings;
-
-namespace SemanticKernel.Connectors.UnitTests.Ollama;
+﻿namespace SemanticKernel.Connectors.UnitTests.Ollama;
 
 public class OllamaKernelBuilderExtensionsTests
 {
@@ -10,7 +8,7 @@ public class OllamaKernelBuilderExtensionsTests
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
-        builder.AddOllamaTextGeneration("model", "http://localhost");
+        builder.AddOllamaTextGeneration(TestConstants.FakeModel, TestConstants.FakeUriString);
 
         Kernel kernel = builder.Build();
 
@@ -27,7 +25,24 @@ public class OllamaKernelBuilderExtensionsTests
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
-        builder.AddOllamaTextGeneration("model", new Uri("http://localhost"));
+        builder.AddOllamaTextGeneration(TestConstants.FakeModel, TestConstants.FakeUri);
+
+        Kernel kernel = builder.Build();
+
+        ITextGenerationService service = kernel.GetRequiredService<ITextGenerationService>();
+
+        Assert.NotNull(kernel);
+        Assert.NotNull(service);
+
+        Assert.IsType<OllamaTextGenerationService>(service);
+    }
+
+    [Fact]
+    public void AddOllamaTextGenerationWithHttpClientCreatesService()
+    {
+        IKernelBuilder builder = Kernel.CreateBuilder();
+
+        builder.AddOllamaTextGeneration(TestConstants.FakeModel, TestConstants.FakeHttpClient);
 
         Kernel kernel = builder.Build();
 
@@ -44,7 +59,7 @@ public class OllamaKernelBuilderExtensionsTests
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
-        builder.AddOllamaChatCompletion("model", "http://localhost");
+        builder.AddOllamaChatCompletion(TestConstants.FakeModel, TestConstants.FakeUriString);
 
         Kernel kernel = builder.Build();
 
@@ -61,7 +76,24 @@ public class OllamaKernelBuilderExtensionsTests
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
-        builder.AddOllamaChatCompletion("model", new Uri("http://localhost"));
+        builder.AddOllamaChatCompletion(TestConstants.FakeModel, TestConstants.FakeUri);
+
+        Kernel kernel = builder.Build();
+
+        IChatCompletionService service = kernel.GetRequiredService<IChatCompletionService>();
+
+        Assert.NotNull(kernel);
+        Assert.NotNull(service);
+
+        Assert.IsType<OllamaChatCompletionService>(service);
+    }
+
+    [Fact]
+    public void AddOllamaChatCompletionWitHttpClientCreatesService2()
+    {
+        IKernelBuilder builder = Kernel.CreateBuilder();
+
+        builder.AddOllamaChatCompletion(TestConstants.FakeModel, TestConstants.FakeHttpClient);
 
         Kernel kernel = builder.Build();
 
@@ -78,7 +110,7 @@ public class OllamaKernelBuilderExtensionsTests
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
-        builder.AddOllamaTextEmbeddingGeneration("model", "http://localhost");
+        builder.AddOllamaTextEmbeddingGeneration(TestConstants.FakeModel, TestConstants.FakeUriString);
 
         Kernel kernel = builder.Build();
 
@@ -95,7 +127,24 @@ public class OllamaKernelBuilderExtensionsTests
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
-        builder.AddOllamaTextEmbeddingGeneration("model", new Uri("http://localhost"));
+        builder.AddOllamaTextEmbeddingGeneration(TestConstants.FakeModel, TestConstants.FakeUri);
+
+        Kernel kernel = builder.Build();
+
+        ITextEmbeddingGenerationService service = kernel.GetRequiredService<ITextEmbeddingGenerationService>();
+
+        Assert.NotNull(kernel);
+        Assert.NotNull(service);
+
+        Assert.IsType<OllamaTextEmbeddingGenerationService>(service);
+    }
+
+    [Fact]
+    public void AddOllamaTextEmbeddingGenerationWithHttpClientCreatesService()
+    {
+        IKernelBuilder builder = Kernel.CreateBuilder();
+
+        builder.AddOllamaTextEmbeddingGeneration(TestConstants.FakeModel, TestConstants.FakeHttpClient);
 
         Kernel kernel = builder.Build();
 

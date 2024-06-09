@@ -10,7 +10,7 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
     private Dictionary<string, object?> AttributesInternal { get; } = [];
 
     private readonly Uri? _endpoint;
-    private readonly HttpClient? _httpClient;
+    private readonly HttpClient _httpClient;
     private readonly string _model;
     private readonly ILoggerFactory? _loggerFactory;
 
@@ -22,22 +22,20 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
     /// </summary>
     /// <param name="model">The model name.</param>
     /// <param name="endpoint">The uri endpoint including the port where Ollama server is hosted</param>
-    /// <param name="httpClient">Optional HTTP client to be used for communication with the Ollama API.</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaTextGenerationService(
-        string model,
-        Uri? endpoint = null,
-        HttpClient? httpClient = null,
-        ILoggerFactory? loggerFactory = null)
+    public OllamaTextGenerationService(string model, Uri endpoint, ILoggerFactory? loggerFactory = null)
     {
-
         Verify.NotNullOrWhiteSpace(model, nameof(model));
-        Verify.ValidateHttpClientAndEndpoint(httpClient, endpoint);
+        Verify.NotNull(endpoint, nameof(endpoint));
+        Verify.NotNullOrWhiteSpace(endpoint.AbsoluteUri, nameof(endpoint.AbsoluteUri));
 
         this._model = model;
-        this._httpClient = httpClient;
         this._loggerFactory = loggerFactory;
-        this._endpoint = OllamaClientBuilder.GetOllamaClientEndpoint(httpClient, endpoint);
+        this._endpoint = endpoint;
+        this._httpClient = new()
+        {
+            BaseAddress = this._endpoint,
+        };
 
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
@@ -47,14 +45,31 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
     /// </summary>
     /// <param name="model">The model name.</param>
     /// <param name="endpoint">The uri string endpoint including the port where Ollama server is hosted</param>
+    /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
+    public OllamaTextGenerationService(string model, string endpoint, ILoggerFactory? loggerFactory = null)
+        : this(model, new Uri(endpoint), loggerFactory)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OllamaTextGenerationService"/> class.
+    /// </summary>
+    /// <param name="model">The model name.</param>
     /// <param name="httpClient">Optional HTTP client to be used for communication with the Ollama API.</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaTextGenerationService(
-        string model,
-        string? endpoint = null,
-        HttpClient? httpClient = null,
-        ILoggerFactory? loggerFactory = null) : this(model, string.IsNullOrWhiteSpace(endpoint) ? null : new Uri(endpoint), httpClient, loggerFactory)
+    public OllamaTextGenerationService(string model, HttpClient httpClient, ILoggerFactory? loggerFactory = null)
     {
+        Verify.NotNullOrWhiteSpace(model, nameof(model));
+        Verify.NotNull(httpClient, nameof(httpClient));
+        Verify.NotNull(httpClient.BaseAddress, nameof(httpClient.BaseAddress));
+        Verify.NotNullOrWhiteSpace(httpClient.BaseAddress.AbsoluteUri, nameof(httpClient.BaseAddress.AbsoluteUri));
+
+        this._model = model;
+        this._httpClient = httpClient;
+        this._loggerFactory = loggerFactory;
+        this._endpoint = this._httpClient.BaseAddress;
+
+        this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
     /// <inheritdoc />
@@ -71,7 +86,7 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
 
         try
         {
-            using OllamaClient client = OllamaClientBuilder.CreateOllamaClient(this._httpClient, this._endpoint, this._loggerFactory);
+            using OllamaClient client = new(this._httpClient, this._loggerFactory);
 
             response = await client.GenerateCompletionStreamingAsync(CreateGenerateCompletionOptions(model, prompt, ollamaPromptExecutionSettings), cancellationToken).ConfigureAwait(false);
         }
@@ -132,7 +147,7 @@ public sealed class OllamaTextGenerationService : ITextGenerationService
 
         try
         {
-            using OllamaClient client = OllamaClientBuilder.CreateOllamaClient(this._httpClient, this._endpoint, this._loggerFactory);
+            using OllamaClient client = new(this._httpClient, this._loggerFactory);
 
             response = await client.GenerateCompletionAsync(CreateGenerateCompletionOptions(model, prompt, ollamaPromptExecutionSettings), cancellationToken).ConfigureAwait(false);
         }

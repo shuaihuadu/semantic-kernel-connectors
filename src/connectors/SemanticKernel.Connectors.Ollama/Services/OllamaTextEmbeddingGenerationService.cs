@@ -8,7 +8,7 @@ public sealed class OllamaTextEmbeddingGenerationService : ITextEmbeddingGenerat
     private Dictionary<string, object?> AttributesInternal { get; } = [];
 
     private readonly Uri? _endpoint;
-    private readonly HttpClient? _httpClient;
+    private readonly HttpClient _httpClient;
     private readonly string _model;
     private readonly ILoggerFactory? _loggerFactory;
 
@@ -20,39 +20,52 @@ public sealed class OllamaTextEmbeddingGenerationService : ITextEmbeddingGenerat
     /// </summary>
     /// <param name="model">The model name.</param>
     /// <param name="endpoint">The uri endpoint including the port where Ollama server is hosted</param>
-    /// <param name="httpClient">Optional HTTP client to be used for communication with the Ollama API.</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaTextEmbeddingGenerationService(
-        string model,
-        Uri? endpoint = null,
-        HttpClient? httpClient = null,
-        ILoggerFactory? loggerFactory = null)
+    public OllamaTextEmbeddingGenerationService(string model, Uri endpoint, ILoggerFactory? loggerFactory = null)
     {
-
         Verify.NotNullOrWhiteSpace(model, nameof(model));
-        Verify.ValidateHttpClientAndEndpoint(httpClient, endpoint);
+        Verify.NotNull(endpoint, nameof(endpoint));
 
         this._model = model;
-        this._httpClient = httpClient;
         this._loggerFactory = loggerFactory;
-        this._endpoint = OllamaClientBuilder.GetOllamaClientEndpoint(httpClient, endpoint);
+        this._endpoint = endpoint;
+        this._httpClient = new()
+        {
+            BaseAddress = this._endpoint,
+        };
 
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OllamaChatCompletionService"/> class.
+    /// Initializes a new instance of the <see cref="OllamaTextEmbeddingGenerationService"/> class.
     /// </summary>
     /// <param name="model">The model name.</param>
     /// <param name="endpoint">The uri string endpoint including the port where Ollama server is hosted</param>
+    /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
+    public OllamaTextEmbeddingGenerationService(string model, string endpoint, ILoggerFactory? loggerFactory = null) : this(model, new Uri(endpoint), loggerFactory)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OllamaTextEmbeddingGenerationService"/> class.
+    /// </summary>
+    /// <param name="model">The model name.</param>
     /// <param name="httpClient">Optional HTTP client to be used for communication with the Ollama API.</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaTextEmbeddingGenerationService(
-        string model,
-        string? endpoint = null,
-        HttpClient? httpClient = null,
-        ILoggerFactory? loggerFactory = null) : this(model, string.IsNullOrWhiteSpace(endpoint) ? null : new Uri(endpoint), httpClient, loggerFactory)
+    public OllamaTextEmbeddingGenerationService(string model, HttpClient httpClient, ILoggerFactory? loggerFactory = null)
     {
+        Verify.NotNullOrWhiteSpace(model, nameof(model));
+        Verify.NotNull(httpClient, nameof(httpClient));
+        Verify.NotNull(httpClient.BaseAddress, nameof(httpClient.BaseAddress));
+        Verify.NotNullOrWhiteSpace(httpClient.BaseAddress.AbsoluteUri, nameof(httpClient.BaseAddress.AbsoluteUri));
+
+        this._model = model;
+        this._httpClient = httpClient;
+        this._loggerFactory = loggerFactory;
+        this._endpoint = this._httpClient.BaseAddress;
+
+        this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
     /// <inheritdoc/>
@@ -65,7 +78,7 @@ public sealed class OllamaTextEmbeddingGenerationService : ITextEmbeddingGenerat
             throw new NotSupportedException("Currently this interface does not support multiple embeddings results per data item, use only one data item");
         }
 
-        using OllamaClient client = OllamaClientBuilder.CreateOllamaClient(this._httpClient, this._endpoint, this._loggerFactory);
+        using OllamaClient client = new(this._httpClient, this._loggerFactory);
 
         EmbeddingResponse response = await client.GenerateEmbeddingAsync(this._model, data.First(), cancellationToken);
 
