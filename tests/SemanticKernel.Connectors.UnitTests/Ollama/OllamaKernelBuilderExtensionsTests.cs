@@ -2,7 +2,7 @@
 
 public class OllamaKernelBuilderExtensionsTests
 {
-
+    #region Text Generation
     [Fact]
     public void AddOllamaTextGenerationWithUriStringCreatesService()
     {
@@ -55,6 +55,17 @@ public class OllamaKernelBuilderExtensionsTests
     }
 
     [Fact]
+    public void AddOllamaTextGenerationWithHttpClientWithNullBaseAddressCreatesService()
+    {
+        IKernelBuilder builder = Kernel.CreateBuilder();
+
+        Assert.Throws<ArgumentNullException>(() => builder.AddOllamaTextGeneration(TestConstants.FakeModel, TestConstants.FakeHttpClientWithNullBaseAddress));
+    }
+
+    #endregion
+
+    #region Chat Completion
+    [Fact]
     public void AddOllamaChatCompletionWithUriStringCreatesService()
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
@@ -72,7 +83,7 @@ public class OllamaKernelBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddOllamaChatCompletionWithUriCreatesService2()
+    public void AddOllamaChatCompletionWithUriCreatesService()
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
@@ -89,7 +100,7 @@ public class OllamaKernelBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddOllamaChatCompletionWitHttpClientCreatesService2()
+    public void AddOllamaChatCompletionWitHttpClientCreatesService()
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
@@ -104,6 +115,19 @@ public class OllamaKernelBuilderExtensionsTests
 
         Assert.IsType<OllamaChatCompletionService>(service);
     }
+
+
+    [Fact]
+    public void AddOllamaChatCompletionWithHttpClientWithNullBaseAddressCreatesService()
+    {
+        IKernelBuilder builder = Kernel.CreateBuilder();
+
+        Assert.Throws<ArgumentNullException>(() => builder.AddOllamaChatCompletion(TestConstants.FakeModel, TestConstants.FakeHttpClientWithNullBaseAddress));
+    }
+
+    #endregion
+
+    #region Text Embedding
 
     [Fact]
     public void AddOllamaTextEmbeddingGenerationWithUriStringCreatesService()
@@ -155,4 +179,14 @@ public class OllamaKernelBuilderExtensionsTests
 
         Assert.IsType<OllamaTextEmbeddingGenerationService>(service);
     }
+
+    [Fact]
+    public void AddOllamaTextEmbeddingGenerationWithHttpClientWithNullBaseAddressCreatesService()
+    {
+        IKernelBuilder builder = Kernel.CreateBuilder();
+
+        Assert.Throws<ArgumentNullException>(() => builder.AddOllamaTextEmbeddingGeneration(TestConstants.FakeModel, TestConstants.FakeHttpClientWithNullBaseAddress));
+    }
+
+    #endregion
 }

@@ -39,10 +39,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Ollama\TestData\textgeneration_test_stream_response.txt">
+	  <None Update="Ollama\TestData\text_generation_test_stream_response.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\textgeneration_test_response.json">
+	  <None Update="Ollama\TestData\text_generation_test_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

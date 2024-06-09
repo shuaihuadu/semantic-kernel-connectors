@@ -6,4 +6,7 @@ global using Microsoft.SemanticKernel.Embeddings;
 global using Microsoft.SemanticKernel.TextGeneration;
 global using Moq;
 global using System.Diagnostics.CodeAnalysis;
+global using System.Net;
+global using System.Text;
+global using System.Text.Json;
 global using TestConstants = SemanticKernel.Connectors.UnitTests.OllamaTestHelper.Constants;

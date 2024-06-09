@@ -9,6 +9,7 @@ internal static class OllamaTestHelper
         internal const string FakeModel = "fake-model";
         internal static readonly Uri FakeUri = new(FakeUriString);
         internal static readonly HttpClient FakeHttpClient = new() { BaseAddress = FakeUri };
+        internal static readonly HttpClient FakeHttpClientWithNullBaseAddress = new() { BaseAddress = null };
     }
 
     internal static string GetTestResponse(string fileName)
