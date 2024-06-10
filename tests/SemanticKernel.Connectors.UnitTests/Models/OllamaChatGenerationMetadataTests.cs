@@ -2,8 +2,7 @@ namespace SemanticKernel.Connectors.UnitTests;
 
 public class OllamaChatGenerationMetadataTests
 {
-    private static readonly Dictionary<string, object?> TestDictionaryData =
-    new()
+    private static readonly Dictionary<string, object?> TestDictionaryData = new()
     {
         [nameof(OllamaChatGenerationMetadata.PromptEvalCount)] = 33,
         [nameof(OllamaChatGenerationMetadata.PromptEvalDuration)] = 78567900L,
@@ -50,6 +49,24 @@ public class OllamaChatGenerationMetadataTests
         OllamaChatGenerationMetadata metadata = OllamaChatGenerationMetadata.FromDictionary(metadataSource);
 
         AssertMetaData(metadata);
+    }
+
+    [Fact]
+    public void GetValueFromDictionaryWhenKeyNotExistsShouldReturnNull()
+    {
+        OllamaChatGenerationMetadata metadata = OllamaChatGenerationMetadata.FromDictionary(new Dictionary<string, object?>());
+
+        Assert.NotNull(metadata);
+
+        Assert.Null(metadata.PromptEvalCount);
+        Assert.Null(metadata.PromptEvalDuration);
+        Assert.Null(metadata.EvalCount);
+        Assert.Null(metadata.DoneReason);
+        Assert.Null(metadata.TotalDuration);
+        Assert.Null(metadata.LoadDuration);
+        Assert.Null(metadata.EvalDuration);
+        Assert.Null(metadata.Done);
+        Assert.Null(metadata.CreatedAt);
     }
 
     private static void AssertMetaData(OllamaChatGenerationMetadata metadata)

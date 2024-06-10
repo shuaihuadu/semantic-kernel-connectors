@@ -4,8 +4,7 @@ public class OllamaTextGenerationMetadataTests
 {
     private static readonly long[] context = [1L, 2L, 4L];
 
-    private static readonly Dictionary<string, object?> TestDictionaryData =
-    new()
+    private static readonly Dictionary<string, object?> TestDictionaryData = new()
     {
         [nameof(OllamaTextGenerationMetadata.PromptEvalCount)] = 16,
         [nameof(OllamaTextGenerationMetadata.PromptEvalDuration)] = 665900L,
@@ -54,6 +53,24 @@ public class OllamaTextGenerationMetadataTests
         OllamaTextGenerationMetadata metadata = OllamaTextGenerationMetadata.FromDictionary(metadataSource);
 
         AssertMetaData(metadata);
+    }
+
+    [Fact]
+    public void GetValueFromDictionaryWhenKeyNotExistsShouldReturnNull()
+    {
+        OllamaTextGenerationMetadata metadata = OllamaTextGenerationMetadata.FromDictionary(new Dictionary<string, object?>());
+
+        Assert.NotNull(metadata);
+
+        Assert.Null(metadata.PromptEvalCount);
+        Assert.Null(metadata.PromptEvalDuration);
+        Assert.Null(metadata.EvalCount);
+        Assert.Null(metadata.DoneReason);
+        Assert.Null(metadata.TotalDuration);
+        Assert.Null(metadata.LoadDuration);
+        Assert.Null(metadata.EvalDuration);
+        Assert.Null(metadata.Done);
+        Assert.Null(metadata.CreatedAt);
     }
 
     private static void AssertMetaData(OllamaTextGenerationMetadata metadata)
