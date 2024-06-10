@@ -1,0 +1,16 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": "This is a test chat completion response"
+  },
+  "done_reason": "stop",
+  "total_duration": 4684546714,
+  "load_duration": 776435,
+  "prompt_eval_count": 0,
+  "prompt_eval_duration": 182528000,
+  "eval_count": 27,
+  "eval_duration": 4350813000,
+  "model": "llama3",
+  "created_at": "2024-06-10T09:28:29.2747503+00:00",
+  "done": true
+}

@@ -168,7 +168,7 @@ public sealed class OllamaChatCompletionService : IChatCompletionService
         return new ChatCompletionOptions
         {
             Model = model,
-            Messages = [.. chatHistory.Select(message => message.ToChatMessageRole())],
+            Messages = [.. chatHistory.Select(message => message.ToChatMessage())],
             Format = ollamaPromptExecutionSettings.Format,
             KeepAlive = ollamaPromptExecutionSettings.KeepAlive,
             Options = new ParameterOptions

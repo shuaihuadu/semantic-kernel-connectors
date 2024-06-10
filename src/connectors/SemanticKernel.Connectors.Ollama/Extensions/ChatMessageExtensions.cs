@@ -7,8 +7,10 @@ internal static class ChatMessageExtensions
     /// </summary>
     /// <param name="message">The sk chat message content.</param>
     /// <returns>The chat message role.</returns>
-    public static ChatMessage ToChatMessageRole(this ChatMessageContent message)
+    public static ChatMessage ToChatMessage(this ChatMessageContent message)
     {
+        Verify.NotNull(message, nameof(message));
+
         return new ChatMessage
         {
             Content = message.Content ?? string.Empty,
@@ -22,7 +24,7 @@ internal static class ChatMessageExtensions
     /// </summary>
     /// <param name="message">The sk chat message content.</param>
     /// <returns></returns>
-    public static string[] GetChatMessageContentImages(this ChatMessageContent message)
+    static string[] GetChatMessageContentImages(this ChatMessageContent message)
     {
         List<string> result = [];
 

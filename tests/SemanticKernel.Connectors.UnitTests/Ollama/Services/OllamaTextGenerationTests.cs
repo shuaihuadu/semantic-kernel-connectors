@@ -1,6 +1,4 @@
-using System.Text.Json;
-
-namespace SemanticKernel.Connectors.UnitTests.Ollama;
+namespace SemanticKernel.Connectors.UnitTests.Ollama.Services;
 
 public sealed class OllamaTextGenerationTests : IDisposable
 {
@@ -10,14 +8,14 @@ public sealed class OllamaTextGenerationTests : IDisposable
 
     public OllamaTextGenerationTests()
     {
-        this._messageHandlerStub = new HttpMessageHandlerStub();
-        this._messageHandlerStub.ResponseToReturn.Content = new StringContent(OllamaTestHelper.GetTestResponse("text_generation_test_response.json"));
+        _messageHandlerStub = new HttpMessageHandlerStub();
+        _messageHandlerStub.ResponseToReturn.Content = new StringContent(OllamaTestHelper.GetTestResponse("text_generation_test_response.json"));
 
-        this._httpClient = new HttpClient(this._messageHandlerStub, false)
+        _httpClient = new HttpClient(_messageHandlerStub, false)
         {
             BaseAddress = TestConstants.FakeUri
         };
-        this._mockLoggerFactory = new Mock<ILoggerFactory>();
+        _mockLoggerFactory = new Mock<ILoggerFactory>();
     }
 
     #region Constructors
@@ -28,7 +26,7 @@ public sealed class OllamaTextGenerationTests : IDisposable
     public void ConstructorWithUriStringWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaTextGenerationService ollamaTextGenerationService = includeLoggerFactory
-            ? new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeUriString, loggerFactory: this._mockLoggerFactory.Object)
+            ? new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeUriString, loggerFactory: _mockLoggerFactory.Object)
             : new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeUriString);
 
         Assert.NotNull(ollamaTextGenerationService);
@@ -41,7 +39,7 @@ public sealed class OllamaTextGenerationTests : IDisposable
     public void ConstructorWithUriWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaTextGenerationService ollamaTextGenerationService = includeLoggerFactory
-            ? new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeUri, loggerFactory: this._mockLoggerFactory.Object)
+            ? new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeUri, loggerFactory: _mockLoggerFactory.Object)
             : new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeUri);
 
         Assert.NotNull(ollamaTextGenerationService);
@@ -54,7 +52,7 @@ public sealed class OllamaTextGenerationTests : IDisposable
     public void ConstructorWithHttpClientWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaTextGenerationService ollamaTextGenerationService = includeLoggerFactory
-            ? new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeHttpClient, loggerFactory: this._mockLoggerFactory.Object)
+            ? new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeHttpClient, loggerFactory: _mockLoggerFactory.Object)
             : new OllamaTextGenerationService(TestConstants.FakeModel, TestConstants.FakeHttpClient);
 
         Assert.NotNull(ollamaTextGenerationService);
@@ -66,10 +64,11 @@ public sealed class OllamaTextGenerationTests : IDisposable
     [Fact]
     public async Task GetTextContentsWorksCorrectlyAsync()
     {
-        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, this._httpClient);
+        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, _httpClient);
 
         IReadOnlyList<TextContent> textContents = await ollamaTextGenerationService.GetTextContentsAsync("Prompt");
 
+        Assert.NotNull(textContents);
         Assert.True(textContents.Count > 0);
         Assert.Equal("This is a test generation response", textContents[0].Text);
     }
@@ -77,7 +76,7 @@ public sealed class OllamaTextGenerationTests : IDisposable
     [Fact]
     public async Task GetTextContentsHandlesSettingCorrectlyAsync()
     {
-        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, this._httpClient);
+        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, _httpClient);
 
         OllamaPromptExecutionSettings executionSettings = new()
         {
@@ -94,14 +93,17 @@ public sealed class OllamaTextGenerationTests : IDisposable
             Format = "json"
         };
 
-        this._messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
+        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(OllamaTestHelper.GetTestResponse("text_generation_test_response.json"))
         };
 
         IReadOnlyList<TextContent> textContents = await ollamaTextGenerationService.GetTextContentsAsync("Prompt", executionSettings);
 
-        byte[]? requestContent = this._messageHandlerStub.RequestContent;
+        Assert.NotNull(textContents);
+        Assert.True(textContents.Count > 0);
+
+        byte[]? requestContent = _messageHandlerStub.RequestContent;
 
         Assert.NotNull(requestContent);
 
@@ -123,16 +125,15 @@ public sealed class OllamaTextGenerationTests : IDisposable
         Assert.Equal("stop_sequence", content.GetProperty("options").GetProperty("stop")[0].GetString());
     }
 
-
     [Fact]
     public async Task ShouldHandleMetadataAsync()
     {
-        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, this._httpClient);
+        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, _httpClient);
 
         IReadOnlyList<TextContent> textContents = await ollamaTextGenerationService.GetTextContentsAsync("Prompt");
 
         Assert.NotNull(textContents);
-        Assert.NotEmpty(textContents);
+        Assert.True(textContents.Count > 0);
 
         TextContent content = textContents.SingleOrDefault()!;
 
@@ -154,18 +155,18 @@ public sealed class OllamaTextGenerationTests : IDisposable
 
         Assert.True(metadata.Done);
 
-        DateTimeOffset.TryParse("2024-06-09T02:24:37.6058572+00:00", out DateTimeOffset date);
+        _ = DateTimeOffset.TryParse("2024-06-09T02:24:37.6058572+00:00", out DateTimeOffset date);
         Assert.True(metadata.CreatedAt == date);
     }
 
     [Fact]
     public async Task GetStreamingTextContentsWorksCorrectlyAsync()
     {
-        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, this._httpClient);
+        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, _httpClient);
 
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(OllamaTestHelper.GetTestResponse("text_generation_test_stream_response.txt")));
 
-        this._messageHandlerStub.ResponseToReturn = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
+        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StreamContent(stream)
         };
@@ -203,7 +204,7 @@ public sealed class OllamaTextGenerationTests : IDisposable
 
     public void Dispose()
     {
-        this._messageHandlerStub.Dispose();
-        this._httpClient.Dispose();
+        _messageHandlerStub.Dispose();
+        _httpClient.Dispose();
     }
 }
