@@ -90,7 +90,8 @@ public sealed class OllamaTextGenerationTests : IDisposable
             KeepAlive = 500,
             SystemPrompt = "You are an AI Assistant",
             Stop = ["stop_sequence"],
-            Format = "json"
+            Format = "json",
+            ModelId = null
         };
 
         _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
@@ -194,12 +195,94 @@ public sealed class OllamaTextGenerationTests : IDisposable
                 Assert.Equal(4431666000, metadata.EvalDuration);
                 Assert.Equal("stop", metadata.DoneReason);
 
-                DateTimeOffset.TryParse("2024-06-09T06:56:37.8054647+00:00", out DateTimeOffset date);
+                _ = DateTimeOffset.TryParse("2024-06-09T06:56:37.8054647+00:00", out DateTimeOffset date);
                 Assert.True(metadata.CreatedAt == date);
             }
         }
 
         Assert.Equal("Hello there! It's nice to meet you. Is there something I can help you with, or would you like to chat?", contentBuilder.ToString());
+    }
+
+    [Fact]
+    public async Task GetStreamingTextContentsHandlesSettingCorrectlyAsync()
+    {
+        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, _httpClient);
+
+        OllamaPromptExecutionSettings executionSettings = new()
+        {
+            MaxTokens = 100,
+            Temperature = 0.5,
+            TopP = 0.2,
+            TopK = 100,
+            FrequencyPenalty = 1.2,
+            PresencePenalty = 1.4,
+            Seed = 110,
+            KeepAlive = 500,
+            SystemPrompt = "You are an AI Assistant",
+            Stop = ["stop_sequence"],
+            Format = "json",
+            ModelId = null
+        };
+
+        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(OllamaTestHelper.GetTestResponse("text_generation_test_stream_response.txt"))
+        };
+
+        IList<StreamingTextContent> textContents = await ollamaTextGenerationService.GetStreamingTextContentsAsync("Prompt", executionSettings).ToListAsync();
+
+        Assert.NotNull(textContents);
+        Assert.True(textContents.Count > 0);
+
+        byte[]? requestContent = _messageHandlerStub.RequestContent;
+
+        Assert.NotNull(requestContent);
+
+        JsonElement content = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(requestContent));
+
+        Assert.Equal(TestConstants.FakeModel, content.GetProperty("model").GetString());
+        Assert.Equal("Prompt", content.GetProperty("prompt").GetString());
+        Assert.Equal("You are an AI Assistant", content.GetProperty("system").GetString());
+        Assert.Equal(500, content.GetProperty("keep_alive").GetInt32());
+        Assert.Equal("json", content.GetProperty("format").GetString());
+
+        Assert.Equal(100, content.GetProperty("options").GetProperty("num_ctx").GetInt32());
+        Assert.Equal(0.5, content.GetProperty("options").GetProperty("temperature").GetDouble());
+        Assert.Equal(0.2, content.GetProperty("options").GetProperty("top_p").GetDouble());
+        Assert.Equal(100, content.GetProperty("options").GetProperty("top_k").GetInt32());
+        Assert.Equal(1.4, content.GetProperty("options").GetProperty("presence_penalty").GetDouble());
+        Assert.Equal(1.2, content.GetProperty("options").GetProperty("frequency_penalty").GetDouble());
+        Assert.Equal(110, content.GetProperty("options").GetProperty("seed").GetInt32());
+        Assert.Equal("stop_sequence", content.GetProperty("options").GetProperty("stop")[0].GetString());
+    }
+
+    [Fact]
+    public async Task GetTextContentsAsyncShouldThrowWithHttpStatusIsNotOK()
+    {
+        //AppContext.SetSwitch("Microsoft.SemanticKernel.Experimental.GenAI.EnableOTelDiagnosticsSensitive", true);
+
+        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, _httpClient);
+
+        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+        await Assert.ThrowsAsync<OllamaHttpOperationException>(() => ollamaTextGenerationService.GetTextContentsAsync("Prompt"));
+    }
+
+    [Fact]
+    public async Task GetStreamingTextContentsAsyncShouldThrowWithHttpStatusIsNotOK()
+    {
+        //AppContext.SetSwitch("Microsoft.SemanticKernel.Experimental.GenAI.EnableOTelDiagnosticsSensitive", true);
+
+        OllamaTextGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, _httpClient);
+
+        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+
+        await Assert.ThrowsAsync<OllamaHttpOperationException>(async () =>
+        {
+            await foreach (var chunk in ollamaTextGenerationService.GetStreamingTextContentsAsync("Prompt"))
+            {
+            }
+        });
     }
 
     public void Dispose()

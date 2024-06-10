@@ -199,6 +199,57 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task GetStreamingChatMessageContentHandlesSettingCorrectlyAsync()
+    {
+        OllamaChatCompletionService ollamaChatCompletionService = new(TestConstants.FakeModel, _httpClient);
+
+        OllamaPromptExecutionSettings executionSettings = new()
+        {
+            MaxTokens = 256,
+            Temperature = 0.1,
+            TopP = 0.4,
+            TopK = 66,
+            FrequencyPenalty = 1.1,
+            PresencePenalty = 1.5,
+            Seed = 10,
+            KeepAlive = 123,
+            Stop = ["stop_sequence"]
+        };
+
+        ChatHistory history = new("You are an useful AI Assistant");
+        history.AddUserMessage("Prompt");
+
+        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(OllamaTestHelper.GetTestResponse("chat_generation_test_stream_response.txt"))
+        };
+
+        IReadOnlyList<StreamingChatMessageContent> chatMessageContents = await ollamaChatCompletionService.GetStreamingChatMessageContentsAsync(history, executionSettings).ToListAsync();
+
+        Assert.NotNull(chatMessageContents);
+        Assert.True(chatMessageContents.Count > 0);
+
+        byte[]? requestContent = _messageHandlerStub.RequestContent;
+
+        Assert.NotNull(requestContent);
+
+        JsonElement content = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(requestContent));
+
+        Assert.Equal(TestConstants.FakeModel, content.GetProperty("model").GetString());
+        Assert.Equal("You are an useful AI Assistant", content.GetProperty("messages")[0].GetProperty("content").GetString());
+        Assert.Equal("Prompt", content.GetProperty("messages")[1].GetProperty("content").GetString());
+        Assert.Equal(123, content.GetProperty("keep_alive").GetInt32());
+        Assert.Equal(256, content.GetProperty("options").GetProperty("num_ctx").GetInt32());
+        Assert.Equal(0.1, content.GetProperty("options").GetProperty("temperature").GetDouble());
+        Assert.Equal(0.4, content.GetProperty("options").GetProperty("top_p").GetDouble());
+        Assert.Equal(66, content.GetProperty("options").GetProperty("top_k").GetInt32());
+        Assert.Equal(1.5, content.GetProperty("options").GetProperty("presence_penalty").GetDouble());
+        Assert.Equal(1.1, content.GetProperty("options").GetProperty("frequency_penalty").GetDouble());
+        Assert.Equal(10, content.GetProperty("options").GetProperty("seed").GetInt32());
+        Assert.Equal("stop_sequence", content.GetProperty("options").GetProperty("stop")[0].GetString());
+    }
+
+    [Fact]
     public async Task GetChatMessageContentsWorksCorrectlyWithInvalidChatCompletionResponseAsync()
     {
         OllamaChatCompletionService ollamaChatCompletionService = new(TestConstants.FakeModel, _httpClient);
@@ -240,6 +291,31 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
                 Assert.Null(chunk.Role);
             }
         }
+    }
+
+    [Fact]
+    public async Task GetChatMessageContentsAsyncShouldThrowWithHttpStatusIsNotOK()
+    {
+        OllamaChatCompletionService ollamaChatCompletionService = new(TestConstants.FakeModel, _httpClient);
+
+        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+        await Assert.ThrowsAsync<OllamaHttpOperationException>(() => ollamaChatCompletionService.GetChatMessageContentsAsync([new ChatMessageContent(AuthorRole.User, "Prompt")]));
+    }
+
+    [Fact]
+    public async Task GetStreamingChatMessageContentsAsyncShouldThrowWithHttpStatusIsNotOK()
+    {
+        OllamaChatCompletionService ollamaChatCompletionService = new(TestConstants.FakeModel, _httpClient);
+
+        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+
+        await Assert.ThrowsAsync<OllamaHttpOperationException>(async () =>
+        {
+            await foreach (var chunk in ollamaChatCompletionService.GetStreamingChatMessageContentsAsync("Prompt"))
+            {
+            }
+        });
     }
 
     public void Dispose()

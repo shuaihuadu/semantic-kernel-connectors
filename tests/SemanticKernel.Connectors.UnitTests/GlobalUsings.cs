@@ -14,4 +14,5 @@ global using System.Net;
 global using System.Text;
 global using System.Text.Json;
 global using Xunit;
+global using OllamaHttpOperationException = Ollama.Core.HttpOperationException;
 global using TestConstants = SemanticKernel.Connectors.UnitTests.OllamaTestHelper.Constants;
