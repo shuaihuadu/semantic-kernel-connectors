@@ -5,6 +5,8 @@
 /// </summary>
 public sealed class OllamaTextEmbeddingGenerationService : OllamaBaseService, ITextEmbeddingGenerationService
 {
+    private readonly OllamaClient _ollamaClient;
+
     private Dictionary<string, object?> AttributesInternal { get; } = [];
 
     /// <inheritdoc />
@@ -18,6 +20,8 @@ public sealed class OllamaTextEmbeddingGenerationService : OllamaBaseService, IT
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     public OllamaTextEmbeddingGenerationService(string model, Uri endpoint, ILoggerFactory? loggerFactory = null) : base(model, endpoint, loggerFactory)
     {
+        this._ollamaClient = new OllamaClient(endpoint, loggerFactory);
+
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
@@ -37,6 +41,8 @@ public sealed class OllamaTextEmbeddingGenerationService : OllamaBaseService, IT
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     public OllamaTextEmbeddingGenerationService(string model, HttpClient httpClient, ILoggerFactory? loggerFactory = null) : base(model, httpClient, loggerFactory)
     {
+        this._ollamaClient = new OllamaClient(httpClient, loggerFactory);
+
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
@@ -50,9 +56,7 @@ public sealed class OllamaTextEmbeddingGenerationService : OllamaBaseService, IT
             throw new NotSupportedException("Currently this interface does not support multiple embeddings results per data item, use only one data item");
         }
 
-        using OllamaClient client = new(this._httpClient, this._loggerFactory);
-
-        EmbeddingResponse response = await client.GenerateEmbeddingAsync(this._model, data.First(), cancellationToken);
+        EmbeddingResponse response = await this._ollamaClient.GenerateEmbeddingAsync(this._model, data.First(), cancellationToken);
 
         return [response.Embedding];
     }

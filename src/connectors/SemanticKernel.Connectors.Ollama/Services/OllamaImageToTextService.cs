@@ -5,6 +5,8 @@
 /// </summary>
 public class OllamaImageToTextService : OllamaTextBaseService, IImageToTextService
 {
+    private readonly OllamaClient _ollamaClient;
+
     private Dictionary<string, object?> AttributesInternal { get; } = [];
 
     /// <inheritdoc />
@@ -18,6 +20,8 @@ public class OllamaImageToTextService : OllamaTextBaseService, IImageToTextServi
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     public OllamaImageToTextService(string model, Uri endpoint, ILoggerFactory? loggerFactory = null) : base(model, endpoint, loggerFactory)
     {
+        this._ollamaClient = new OllamaClient(endpoint, loggerFactory);
+
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
@@ -37,6 +41,8 @@ public class OllamaImageToTextService : OllamaTextBaseService, IImageToTextServi
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     public OllamaImageToTextService(string model, HttpClient httpClient, ILoggerFactory? loggerFactory = null) : base(model, httpClient, loggerFactory)
     {
+        this._ollamaClient = new OllamaClient(httpClient, loggerFactory);
+
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
@@ -55,7 +61,6 @@ public class OllamaImageToTextService : OllamaTextBaseService, IImageToTextServi
         string model = executionSettings?.ModelId ?? this._model;
 
         OllamaPromptExecutionSettings ollamaPromptExecutionSettings = OllamaPromptExecutionSettings.FromExecutionSettings(executionSettings);
-        ollamaPromptExecutionSettings.ModelId ??= this._model;
 
         string imageBase64Data = Convert.ToBase64String(content.Data.Value.ToArray());
 
@@ -65,9 +70,7 @@ public class OllamaImageToTextService : OllamaTextBaseService, IImageToTextServi
 
         try
         {
-            using OllamaClient client = new(this._httpClient, this._loggerFactory);
-
-            response = await client.GenerateCompletionAsync(CreateGenerateCompletionOptions(model, prompt, ollamaPromptExecutionSettings, [imageBase64Data]), cancellationToken).ConfigureAwait(false);
+            response = await this._ollamaClient.GenerateCompletionAsync(CreateGenerateCompletionOptions(model, prompt, ollamaPromptExecutionSettings, [imageBase64Data]), cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (activity is not null)
         {

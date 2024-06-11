@@ -20,11 +20,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.14.1" />
-		<PackageReference Include="Ollama.NET" Version="1.0.5" />
+		<PackageReference Include="Ollama.NET" Version="1.0.6" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="SemanticKernel.Connectors.UnitTests"/>
+		<InternalsVisibleTo Include="SemanticKernel.Connectors.UnitTests" />
 	</ItemGroup>
 
 </Project>

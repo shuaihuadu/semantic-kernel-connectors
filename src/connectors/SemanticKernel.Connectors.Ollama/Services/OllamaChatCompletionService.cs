@@ -5,8 +5,9 @@
 /// </summary>
 public sealed class OllamaChatCompletionService : OllamaBaseService, IChatCompletionService
 {
-    private Dictionary<string, object?> AttributesInternal { get; } = [];
+    private readonly OllamaClient _ollamaClient;
 
+    private Dictionary<string, object?> AttributesInternal { get; } = [];
     /// <inheritdoc />
     public IReadOnlyDictionary<string, object?> Attributes => this.AttributesInternal;
 
@@ -18,6 +19,8 @@ public sealed class OllamaChatCompletionService : OllamaBaseService, IChatComple
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     public OllamaChatCompletionService(string model, Uri endpoint, ILoggerFactory? loggerFactory = null) : base(model, endpoint, loggerFactory)
     {
+        this._ollamaClient = new OllamaClient(endpoint, loggerFactory);
+
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
@@ -37,6 +40,8 @@ public sealed class OllamaChatCompletionService : OllamaBaseService, IChatComple
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     public OllamaChatCompletionService(string model, HttpClient httpClient, ILoggerFactory? loggerFactory = null) : base(model, httpClient, loggerFactory)
     {
+        this._ollamaClient = new OllamaClient(httpClient, loggerFactory);
+
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
@@ -46,7 +51,6 @@ public sealed class OllamaChatCompletionService : OllamaBaseService, IChatComple
         string model = executionSettings?.ModelId ?? this._model;
 
         OllamaPromptExecutionSettings ollamaPromptExecutionSettings = OllamaPromptExecutionSettings.FromExecutionSettings(executionSettings);
-        ollamaPromptExecutionSettings.ModelId ??= this._model;
 
         using Activity? activity = ModelDiagnostics.StartCompletionActivity(this._endpoint, model, ModelProvider, chatHistory, ollamaPromptExecutionSettings);
 
@@ -54,9 +58,7 @@ public sealed class OllamaChatCompletionService : OllamaBaseService, IChatComple
 
         try
         {
-            using OllamaClient client = new(this._httpClient, this._loggerFactory);
-
-            response = await client.ChatCompletionStreamingAsync(CreateChatCompletionOptions(model, chatHistory, ollamaPromptExecutionSettings), cancellationToken).ConfigureAwait(false);
+            response = await this._ollamaClient.ChatCompletionStreamingAsync(CreateChatCompletionOptions(model, chatHistory, ollamaPromptExecutionSettings), cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (activity is not null)
         {
@@ -107,7 +109,6 @@ public sealed class OllamaChatCompletionService : OllamaBaseService, IChatComple
         string model = executionSettings?.ModelId ?? this._model;
 
         OllamaPromptExecutionSettings ollamaPromptExecutionSettings = OllamaPromptExecutionSettings.FromExecutionSettings(executionSettings);
-        ollamaPromptExecutionSettings.ModelId ??= this._model;
 
         using Activity? activity = ModelDiagnostics.StartCompletionActivity(this._endpoint, model, ModelProvider, chatHistory, ollamaPromptExecutionSettings);
 
@@ -115,9 +116,7 @@ public sealed class OllamaChatCompletionService : OllamaBaseService, IChatComple
 
         try
         {
-            using OllamaClient client = new(this._httpClient, this._loggerFactory);
-
-            response = await client.ChatCompletionAsync(CreateChatCompletionOptions(model, chatHistory, ollamaPromptExecutionSettings), cancellationToken).ConfigureAwait(false);
+            response = await this._ollamaClient.ChatCompletionAsync(CreateChatCompletionOptions(model, chatHistory, ollamaPromptExecutionSettings), cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (activity is not null)
         {

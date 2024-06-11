@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<!-- Central version prefix - applies to all nuget packages. -->
-		<VersionPrefix>1.0.0</VersionPrefix>
+		<VersionPrefix>1.0.1</VersionPrefix>
 
 		<PackageVersion Condition="'$(VersionSuffix)' != ''">$(VersionPrefix)-$(VersionSuffix)</PackageVersion>
 		<PackageVersion Condition="'$(VersionSuffix)' == ''">$(VersionPrefix)</PackageVersion>
@@ -30,8 +30,6 @@
 		<!-- Required license, copyright, and repo information. Packages can override. -->
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>© ShuaiHua Du. All rights reserved.</Copyright>
-		<PackageProjectUrl>https://aka.ms/semantic-kernel</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/microsoft/semantic-kernel</RepositoryUrl>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 
 		<!-- Use icon and NUGET readme from dotnet/nuget folder -->
