@@ -1,3 +1,9 @@
+# Semantic Kernel connectors
+
+**Semantic Kernel connectors, Contains generation and embedding services. For the connectors which not provided by the official.**
+
+ - [Semantic Kernel Connectors for Ollama](https://github.com/shuaihuadu/SemanticKernel.Connectors): Based on [Ollama.NET](https://github.com/shuaihuadu/ollama.net)
+
 # About Semantic Kernel
 
 **Semantic Kernel (SK)** is a lightweight SDK enabling integration of AI Large

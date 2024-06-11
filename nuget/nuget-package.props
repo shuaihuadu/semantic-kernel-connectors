@@ -10,15 +10,13 @@
 		<IsPackable>true</IsPackable>
 
 		<!-- Package validation. Baseline Version should be lower or equal to current version. -->
-		<PackageValidationBaselineVersion>1.10.0</PackageValidationBaselineVersion>
+		<PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion>
 		<!-- Validate assembly attributes only for Publish builds -->
 		<NoWarn Condition="'$(Configuration)' != 'Publish'">$(NoWarn);CP0003</NoWarn>
 		<!-- Do not validate reference assemblies -->
 		<NoWarn>$(NoWarn);CP1002</NoWarn>
 
 		<!-- Default description and tags. Packages can override. -->
-
-
 		<Company>ShuaiHua Du</Company>
 		<Authors>ShuaiHua Du</Authors>
 		<Product>Semantic Kernel Connectors</Product>
@@ -26,8 +24,6 @@
 		<Copyright>© ShuaiHua Du. All rights reserved.</Copyright>
 		<PackageProjectUrl>https://github.com/shuaihuadu/SemanticKernel.Connectors</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/shuaihuadu/SemanticKernel.Connectors</RepositoryUrl>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageIcon>icon.png</PackageIcon>
 		<PackageTags>Ollama, AI, Artificial Intelligence, SDK</PackageTags>
 		<PackageId>$(AssemblyName)</PackageId>
 
@@ -41,7 +37,7 @@
 		<!-- Use icon and NUGET readme from dotnet/nuget folder -->
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageIconUrl>icon.png</PackageIconUrl>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageReadmeFile>NUGET.md</PackageReadmeFile>
 
 
 		<!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
