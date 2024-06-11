@@ -1,4 +1,4 @@
-namespace SemanticKernel.Connectors.UnitTests;
+namespace SemanticKernel.Connectors.UnitTests.Ollama.Models;
 
 public class OllamaTextGenerationMetadataTests
 {
@@ -90,7 +90,7 @@ public class OllamaTextGenerationMetadataTests
     }
 
     [Fact]
-    public void FromDictionaryShouldThrowWithNullDictionary()
+    public void FromDictionaryWithNullDictionaryShouldThrow()
     {
         Assert.Throws<ArgumentNullException>(() => OllamaTextGenerationMetadata.FromDictionary(null));
     }

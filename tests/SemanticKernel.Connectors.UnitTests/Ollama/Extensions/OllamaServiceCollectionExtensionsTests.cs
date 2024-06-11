@@ -1,4 +1,4 @@
-﻿namespace SemanticKernel.Connectors.UnitTests.Ollama;
+﻿namespace SemanticKernel.Connectors.UnitTests.Ollama.Extensions;
 
 public class OllamaServiceCollectionExtensionsTests
 {
@@ -50,7 +50,7 @@ public class OllamaServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public void AddOllamaTextGenerationWithHttpClientWithNullBaseAddressToServiceCollection()
+    public void AddOllamaTextGenerationWithHttpClientWithNullBaseAddressShouldThrow()
     {
         IServiceCollection services = new ServiceCollection();
 
@@ -110,7 +110,7 @@ public class OllamaServiceCollectionExtensionsTests
 
 
     [Fact]
-    public void AddOllamaChatCompletionWithHttpClientWithNullBaseAddressToServiceCollection()
+    public void AddOllamaChatCompletionWithHttpClientWithNullBaseAddressShouldThrow()
     {
         IServiceCollection services = new ServiceCollection();
 
@@ -169,7 +169,7 @@ public class OllamaServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public void AddOllamaTextEmbeddingGenerationWithHttpClientWithNullBaseAddressToServiceCollection()
+    public void AddOllamaTextEmbeddingGenerationWithHttpClientWithNullBaseAddressShouldThrow()
     {
         IServiceCollection services = new ServiceCollection();
 
@@ -228,7 +228,7 @@ public class OllamaServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public void AddOllamaTextToImageWithHttpClientWithNullBaseAddressToServiceCollection()
+    public void AddOllamaTextToImageWithHttpClientWithNullBaseAddressShouldThrow()
     {
         IServiceCollection services = new ServiceCollection();
 

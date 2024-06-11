@@ -1,4 +1,4 @@
-﻿namespace SemanticKernel.Connectors.UnitTests.Ollama;
+﻿namespace SemanticKernel.Connectors.UnitTests.Ollama.Extensions;
 
 public class OllamaPromptExecutionSettingsTests
 {

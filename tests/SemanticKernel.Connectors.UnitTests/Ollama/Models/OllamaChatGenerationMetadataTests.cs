@@ -1,4 +1,4 @@
-namespace SemanticKernel.Connectors.UnitTests;
+namespace SemanticKernel.Connectors.UnitTests.Ollama.Models;
 
 public class OllamaChatGenerationMetadataTests
 {
@@ -85,7 +85,7 @@ public class OllamaChatGenerationMetadataTests
     }
 
     [Fact]
-    public void FromDictionaryShouldThrowWithNullDictionary()
+    public void FromDictionaryWithNullDictionaryShouldThrow()
     {
         Assert.Throws<ArgumentNullException>(() => OllamaChatGenerationMetadata.FromDictionary(null));
     }

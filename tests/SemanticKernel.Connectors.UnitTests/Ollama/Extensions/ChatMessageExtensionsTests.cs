@@ -33,7 +33,7 @@ public class ChatMessageExtensionsTests
     }
 
     [Fact]
-    public void CannotCallToChatMessageRoleWithNullMessage()
+    public void ChatMessageRoleWithNullMessageShouldThrow()
     {
         Assert.Throws<ArgumentNullException>(() => default(ChatMessageContent).ToChatMessage());
     }

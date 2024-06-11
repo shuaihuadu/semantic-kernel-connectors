@@ -1,6 +1,4 @@
-﻿using Microsoft.SemanticKernel.ImageToText;
-
-namespace SemanticKernel.Connectors.UnitTests.Ollama;
+﻿namespace SemanticKernel.Connectors.UnitTests.Ollama.Extensions;
 
 public class OllamaKernelBuilderExtensionsTests
 {
@@ -58,7 +56,7 @@ public class OllamaKernelBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddOllamaTextGenerationWithHttpClientWithNullBaseAddressCreatesService()
+    public void AddOllamaTextGenerationWithHttpClientWithNullBaseAddressShouldThrow()
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
@@ -122,7 +120,7 @@ public class OllamaKernelBuilderExtensionsTests
 
 
     [Fact]
-    public void AddOllamaChatCompletionWithHttpClientWithNullBaseAddressCreatesService()
+    public void AddOllamaChatCompletionWithHttpClientWithNullBaseAddressShouldThrow()
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
@@ -185,7 +183,7 @@ public class OllamaKernelBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddOllamaTextEmbeddingGenerationWithHttpClientWithNullBaseAddressCreatesService()
+    public void AddOllamaTextEmbeddingGenerationWithHttpClientWithNullBaseAddressShouldThrow()
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
@@ -248,7 +246,7 @@ public class OllamaKernelBuilderExtensionsTests
     }
 
     [Fact]
-    public void AddOllamaTextToImageWithHttpClientWithNullBaseAddressCreatesService()
+    public void AddOllamaTextToImageWithHttpClientWithNullBaseAddressShouldThrow()
     {
         IKernelBuilder builder = Kernel.CreateBuilder();
 
