@@ -194,7 +194,6 @@ public class OllamaKernelBuilderExtensionsTests
 
     #endregion
 
-
     #region Text to Image
 
     [Fact]
