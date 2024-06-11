@@ -39,7 +39,7 @@ public class HttpClient_Registration(ITestOutputHelper output) : BaseTest(output
         //Registration of a named HttpClient.
         serviceCollection.AddHttpClient("test-client", (client) =>
         {
-            client.BaseAddress = new Uri("https://api.openai.com/v1/", UriKind.Absolute);
+            client.BaseAddress = new Uri(TestConfiguration.Ollama.Endpoint, UriKind.Absolute);
         });
 
         var kernel = serviceCollection.AddTransient<Kernel>((sp) =>

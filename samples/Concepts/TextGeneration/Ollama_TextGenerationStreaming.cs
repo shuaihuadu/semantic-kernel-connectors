@@ -23,7 +23,7 @@ public class Ollama_TextGenerationStreaming(ITestOutputHelper output) : BaseTest
     }
 
     [Fact]
-    public Task AzureStreamAsync()
+    public Task RunStreamAsync()
     {
         Console.WriteLine("======== Ollama - Text Generation - Streaming ========");
 

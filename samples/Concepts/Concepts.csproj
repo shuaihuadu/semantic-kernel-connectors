@@ -4,9 +4,9 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
+		<NoWarn>SKEXP0001;SKEXP0050</NoWarn>
 		<RootNamespace />
 	</PropertyGroup>
 
@@ -23,6 +23,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+		<PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.14.1-alpha" />
 		<PackageReference Include="xunit" Version="2.8.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.1">
 			<PrivateAssets>all</PrivateAssets>
@@ -38,6 +39,16 @@
 
 	<ItemGroup>
 	  <Compile Remove="D:\Github\SemanticKernel.Connectors\src\InternalUtilities\samples\InternalUtilities\Env.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\test_image.jpg" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\test_image.jpg">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
