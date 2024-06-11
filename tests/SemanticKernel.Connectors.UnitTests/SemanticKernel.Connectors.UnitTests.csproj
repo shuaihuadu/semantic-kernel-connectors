@@ -54,6 +54,9 @@
 	  <None Update="Ollama\TestData\text_embedding_test_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="Ollama\TestData\image_to_text_test_response.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Ollama\TestData\text_generation_test_stream_response.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>

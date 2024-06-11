@@ -1,8 +1,11 @@
-﻿namespace SemanticKernel.Connectors.UnitTests.Ollama;
+﻿using Microsoft.SemanticKernel.ImageToText;
+
+namespace SemanticKernel.Connectors.UnitTests.Ollama;
 
 public class OllamaKernelBuilderExtensionsTests
 {
     #region Text Generation
+
     [Fact]
     public void AddOllamaTextGenerationWithUriStringCreatesService()
     {
@@ -65,6 +68,7 @@ public class OllamaKernelBuilderExtensionsTests
     #endregion
 
     #region Chat Completion
+
     [Fact]
     public void AddOllamaChatCompletionWithUriStringCreatesService()
     {
@@ -186,6 +190,70 @@ public class OllamaKernelBuilderExtensionsTests
         IKernelBuilder builder = Kernel.CreateBuilder();
 
         Assert.Throws<ArgumentNullException>(() => builder.AddOllamaTextEmbeddingGeneration(TestConstants.FakeModel, TestConstants.FakeHttpClientWithNullBaseAddress));
+    }
+
+    #endregion
+
+
+    #region Text to Image
+
+    [Fact]
+    public void AddOllamaTextToImageWithUriStringCreatesService()
+    {
+        IKernelBuilder builder = Kernel.CreateBuilder();
+
+        builder.AddOllamaImageToText(TestConstants.FakeModel, TestConstants.FakeUriString);
+
+        Kernel kernel = builder.Build();
+
+        IImageToTextService service = kernel.GetRequiredService<IImageToTextService>();
+
+        Assert.NotNull(kernel);
+        Assert.NotNull(service);
+
+        Assert.IsType<OllamaImageToTextService>(service);
+    }
+
+    [Fact]
+    public void AddOllamaTextToImageWithUriCreatesService()
+    {
+        IKernelBuilder builder = Kernel.CreateBuilder();
+
+        builder.AddOllamaImageToText(TestConstants.FakeModel, TestConstants.FakeUri);
+
+        Kernel kernel = builder.Build();
+
+        IImageToTextService service = kernel.GetRequiredService<IImageToTextService>();
+
+        Assert.NotNull(kernel);
+        Assert.NotNull(service);
+
+        Assert.IsType<OllamaImageToTextService>(service);
+    }
+
+    [Fact]
+    public void AddOllamaTextToImageWithHttpClientCreatesService()
+    {
+        IKernelBuilder builder = Kernel.CreateBuilder();
+
+        builder.AddOllamaImageToText(TestConstants.FakeModel, TestConstants.FakeHttpClient);
+
+        Kernel kernel = builder.Build();
+
+        IImageToTextService service = kernel.GetRequiredService<IImageToTextService>();
+
+        Assert.NotNull(kernel);
+        Assert.NotNull(service);
+
+        Assert.IsType<OllamaImageToTextService>(service);
+    }
+
+    [Fact]
+    public void AddOllamaTextToImageWithHttpClientWithNullBaseAddressCreatesService()
+    {
+        IKernelBuilder builder = Kernel.CreateBuilder();
+
+        Assert.Throws<ArgumentNullException>(() => builder.AddOllamaImageToText(TestConstants.FakeModel, TestConstants.FakeHttpClientWithNullBaseAddress));
     }
 
     #endregion

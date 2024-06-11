@@ -176,4 +176,61 @@ public static class OllamaKernelBuilderExtensions
     }
 
     #endregion
+
+    #region Image To Text
+
+    /// <summary>
+    /// Adds ann Ollama image-to-text service with the specified configuration.
+    /// </summary>
+    /// <param name="builder">The <see cref="IKernelBuilder"/> instance to augment.</param>
+    /// <param name="model">The name of the Ollama model.</param>
+    /// <param name="endpoint">The endpoint URL for the text generation service.</param>
+    /// <param name="serviceId">A local identifier for the given AI service.</param>
+    /// <returns>The same instance as <paramref name="builder"/>.</returns>
+    public static IKernelBuilder AddOllamaImageToText(this IKernelBuilder builder, string model, Uri endpoint, string? serviceId = null)
+    {
+        Verify.NotNull(builder);
+        Verify.NotNullOrWhiteSpace(model);
+        Verify.NotNull(endpoint);
+        Verify.NotNullOrWhiteSpace(endpoint.AbsolutePath);
+
+        builder.Services.AddKeyedSingleton<IImageToTextService>(serviceId, (serviceProvider, _) => new OllamaImageToTextService(model, endpoint, serviceProvider.GetService<ILoggerFactory>()));
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds ann Ollama image-to-text service with the specified configuration.
+    /// </summary>
+    /// <param name="builder">The <see cref="IKernelBuilder"/> instance to augment.</param>
+    /// <param name="model">The name of the Ollama model.</param>
+    /// <param name="endpoint">The endpoint URL for the text generation service.</param>
+    /// <param name="serviceId">A local identifier for the given AI service.</param>
+    /// <returns>The same instance as <paramref name="builder"/>.</returns>
+    public static IKernelBuilder AddOllamaImageToText(this IKernelBuilder builder, string model, string endpoint, string? serviceId = null)
+    {
+        return AddOllamaImageToText(builder, model, new Uri(endpoint), serviceId);
+    }
+
+    /// <summary>
+    /// Adds ann Ollama image-to-text service with the specified configuration.
+    /// </summary>
+    /// <param name="builder">The <see cref="IKernelBuilder"/> instance to augment.</param>
+    /// <param name="model">The name of the Ollama model.</param>
+    /// <param name="httpClient">The HttpClient to use with this service.</param>
+    /// <param name="serviceId">A local identifier for the given AI service.</param>
+    /// <returns>The same instance as <paramref name="builder"/>.</returns>
+    public static IKernelBuilder AddOllamaImageToText(this IKernelBuilder builder, string model, HttpClient httpClient, string? serviceId = null)
+    {
+        Verify.NotNull(builder);
+        Verify.NotNullOrWhiteSpace(model);
+        Verify.NotNull(httpClient);
+        Verify.NotNullOrWhiteSpace(httpClient.BaseAddress?.AbsolutePath);
+
+        builder.Services.AddKeyedSingleton<IImageToTextService>(serviceId, (serviceProvider, _) => new OllamaImageToTextService(model, httpClient, serviceProvider.GetService<ILoggerFactory>()));
+
+        return builder;
+    }
+
+    #endregion
 }

@@ -5,6 +5,7 @@ global using Microsoft.SemanticKernel;
 global using Microsoft.SemanticKernel.ChatCompletion;
 global using Microsoft.SemanticKernel.Diagnostics;
 global using Microsoft.SemanticKernel.Embeddings;
+global using Microsoft.SemanticKernel.ImageToText;
 global using Microsoft.SemanticKernel.Services;
 global using Microsoft.SemanticKernel.Text;
 global using Microsoft.SemanticKernel.TextGeneration;

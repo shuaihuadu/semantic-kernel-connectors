@@ -9,7 +9,7 @@ public sealed class OllamaPromptExecutionSettings : PromptExecutionSettings
     /// Gets the specialization for the Ollama execution settings.
     /// </summary>
     /// <param name="executionSettings">Generic prompt execution settings.</param>
-    /// <returns>Specialized HuggingFace execution settings.</returns>
+    /// <returns>Specialized Ollama execution settings.</returns>
     public static OllamaPromptExecutionSettings FromExecutionSettings(PromptExecutionSettings? executionSettings)
     {
         switch (executionSettings)
