@@ -1,4 +1,4 @@
-namespace SemanticKernel.Connectors.UnitTests.Ollama.Extensions;
+namespace SemanticKernel.Connectors.Ollama.UnitTests.Extensions;
 
 public static class AuthorRoleExtensionsTests
 {

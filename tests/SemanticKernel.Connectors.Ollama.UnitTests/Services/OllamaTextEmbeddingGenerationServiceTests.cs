@@ -1,4 +1,6 @@
-﻿namespace SemanticKernel.Connectors.UnitTests.Ollama.Services;
+﻿using SemanticKernel.Connectors.Ollama.UnitTests;
+
+namespace SemanticKernel.Connectors.Ollama.UnitTests.Services;
 
 public sealed class OllamaTextEmbeddingGenerationServiceTests : IDisposable
 {
@@ -8,13 +10,13 @@ public sealed class OllamaTextEmbeddingGenerationServiceTests : IDisposable
 
     public OllamaTextEmbeddingGenerationServiceTests()
     {
-        this._messageHandlerStub = new HttpMessageHandlerStub();
-        this._messageHandlerStub.ResponseToReturn.Content = new StringContent(OllamaTestHelper.GetTestResponse("text_embedding_test_response.json"));
-        this._httpClient = new HttpClient(_messageHandlerStub, false)
+        _messageHandlerStub = new HttpMessageHandlerStub();
+        _messageHandlerStub.ResponseToReturn.Content = new StringContent(OllamaTestHelper.GetTestResponse("text_embedding_test_response.json"));
+        _httpClient = new HttpClient(_messageHandlerStub, false)
         {
             BaseAddress = TestConstants.FakeUri
         };
-        this._mockLoggerFactory = new Mock<ILoggerFactory>();
+        _mockLoggerFactory = new Mock<ILoggerFactory>();
     }
     [Theory]
     [InlineData(true)]
@@ -22,7 +24,7 @@ public sealed class OllamaTextEmbeddingGenerationServiceTests : IDisposable
     public void ConstructorWithUriStringWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaTextEmbeddingGenerationService ollamaTextEmbeddingGenerationService = includeLoggerFactory
-            ? new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeUriString, loggerFactory: this._mockLoggerFactory.Object)
+            ? new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeUriString, loggerFactory: _mockLoggerFactory.Object)
             : new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeUriString);
 
         Assert.NotNull(ollamaTextEmbeddingGenerationService);
@@ -35,7 +37,7 @@ public sealed class OllamaTextEmbeddingGenerationServiceTests : IDisposable
     public void ConstructorWithUriWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaTextEmbeddingGenerationService ollamaTextEmbeddingGenerationService = includeLoggerFactory
-            ? new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeUri, loggerFactory: this._mockLoggerFactory.Object)
+            ? new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeUri, loggerFactory: _mockLoggerFactory.Object)
             : new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeUri);
 
         Assert.NotNull(ollamaTextEmbeddingGenerationService);
@@ -48,7 +50,7 @@ public sealed class OllamaTextEmbeddingGenerationServiceTests : IDisposable
     public void ConstructorWithHttpClientWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaTextEmbeddingGenerationService ollamaTextGenerationService = includeLoggerFactory
-    ? new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeHttpClient, loggerFactory: this._mockLoggerFactory.Object)
+    ? new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeHttpClient, loggerFactory: _mockLoggerFactory.Object)
     : new OllamaTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeHttpClient);
 
         Assert.NotNull(ollamaTextGenerationService);
@@ -58,7 +60,7 @@ public sealed class OllamaTextEmbeddingGenerationServiceTests : IDisposable
     [Fact]
     public async Task ShouldHandleServiceResponseAsync()
     {
-        OllamaTextEmbeddingGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, this._httpClient);
+        OllamaTextEmbeddingGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, _httpClient);
 
         IList<ReadOnlyMemory<float>> embeddings = await ollamaTextGenerationService.GenerateEmbeddingsAsync(["hello"]);
 
@@ -70,7 +72,7 @@ public sealed class OllamaTextEmbeddingGenerationServiceTests : IDisposable
     [Fact]
     public async Task ShouldThrowWithInvalidDataAsync()
     {
-        OllamaTextEmbeddingGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, this._httpClient);
+        OllamaTextEmbeddingGenerationService ollamaTextGenerationService = new(TestConstants.FakeModel, _httpClient);
 
         await Assert.ThrowsAsync<ArgumentException>(() => ollamaTextGenerationService.GenerateEmbeddingsAsync([]));
 

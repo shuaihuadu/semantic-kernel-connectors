@@ -1,4 +1,4 @@
-﻿namespace SemanticKernel.Connectors.UnitTests.Ollama;
+﻿namespace SemanticKernel.Connectors.Ollama.UnitTests;
 
 [ExcludeFromCodeCoverage]
 internal static class OllamaTestHelper

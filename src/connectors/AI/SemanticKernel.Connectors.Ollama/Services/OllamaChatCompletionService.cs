@@ -126,7 +126,7 @@ public sealed class OllamaChatCompletionService : OllamaBaseService, IChatComple
 
         ChatMessageContent content = GetChatMessageContentFromResponse(response);
 
-        activity?.SetCompletionResponse([content]);
+        activity?.SetCompletionResponse([content], response.PromptEvalCount, response.EvalCount);
 
         return [content];
     }

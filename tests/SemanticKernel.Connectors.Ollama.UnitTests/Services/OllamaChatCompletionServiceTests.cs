@@ -1,4 +1,6 @@
-﻿namespace SemanticKernel.Connectors.UnitTests.Ollama.Services;
+﻿using SemanticKernel.Connectors.Ollama.UnitTests;
+
+namespace SemanticKernel.Connectors.Ollama.UnitTests.Services;
 
 public sealed class OllamaChatCompletionServiceTests : IDisposable
 {
@@ -8,13 +10,13 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
 
     public OllamaChatCompletionServiceTests()
     {
-        this._messageHandlerStub = new HttpMessageHandlerStub();
-        this._messageHandlerStub.ResponseToReturn.Content = new StringContent(OllamaTestHelper.GetTestResponse("chat_completion_test_response.json"));
-        this._httpClient = new HttpClient(_messageHandlerStub, false)
+        _messageHandlerStub = new HttpMessageHandlerStub();
+        _messageHandlerStub.ResponseToReturn.Content = new StringContent(OllamaTestHelper.GetTestResponse("chat_completion_test_response.json"));
+        _httpClient = new HttpClient(_messageHandlerStub, false)
         {
             BaseAddress = TestConstants.FakeUri
         };
-        this._mockLoggerFactory = new Mock<ILoggerFactory>();
+        _mockLoggerFactory = new Mock<ILoggerFactory>();
     }
 
     #region Constructors

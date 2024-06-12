@@ -1,4 +1,6 @@
-namespace SemanticKernel.Connectors.UnitTests.Ollama.Services;
+using SemanticKernel.Connectors.Ollama.UnitTests;
+
+namespace SemanticKernel.Connectors.Ollama.UnitTests.Services;
 
 public sealed class OllamaImageToTextServiceTests : IDisposable
 {
@@ -9,15 +11,15 @@ public sealed class OllamaImageToTextServiceTests : IDisposable
 
     public OllamaImageToTextServiceTests()
     {
-        this._messageHandlerStub = new HttpMessageHandlerStub();
-        this._messageHandlerStub.ResponseToReturn.Content = new StringContent(OllamaTestHelper.GetTestResponse("image_to_text_test_response.json"));
+        _messageHandlerStub = new HttpMessageHandlerStub();
+        _messageHandlerStub.ResponseToReturn.Content = new StringContent(OllamaTestHelper.GetTestResponse("image_to_text_test_response.json"));
 
-        this._httpClient = new HttpClient(_messageHandlerStub, false)
+        _httpClient = new HttpClient(_messageHandlerStub, false)
         {
             BaseAddress = TestConstants.FakeUri
         };
-        this._mockLoggerFactory = new Mock<ILoggerFactory>();
-        this._imageContent = new ImageContent
+        _mockLoggerFactory = new Mock<ILoggerFactory>();
+        _imageContent = new ImageContent
         {
             Data = new ReadOnlyMemory<byte>([1, 2, 3])
         };
@@ -71,7 +73,7 @@ public sealed class OllamaImageToTextServiceTests : IDisposable
     {
         OllamaImageToTextService ollamaImageToTextService = new(TestConstants.FakeModel, _httpClient);
 
-        IReadOnlyList<TextContent> textContents = await ollamaImageToTextService.GetTextContentsAsync(this._imageContent);
+        IReadOnlyList<TextContent> textContents = await ollamaImageToTextService.GetTextContentsAsync(_imageContent);
 
         Assert.NotNull(textContents);
         Assert.True(textContents.Count > 0);
@@ -99,7 +101,7 @@ public sealed class OllamaImageToTextServiceTests : IDisposable
             ModelId = null
         };
 
-        IReadOnlyList<TextContent> textContents = await ollamaImageToTextService.GetTextContentsAsync(this._imageContent, executionSettings);
+        IReadOnlyList<TextContent> textContents = await ollamaImageToTextService.GetTextContentsAsync(_imageContent, executionSettings);
 
         Assert.NotNull(textContents);
         Assert.True(textContents.Count > 0);
@@ -131,7 +133,7 @@ public sealed class OllamaImageToTextServiceTests : IDisposable
     {
         OllamaImageToTextService ollamaImageToTextService = new(TestConstants.FakeModel, _httpClient);
 
-        IReadOnlyList<TextContent> textContents = await ollamaImageToTextService.GetTextContentsAsync(this._imageContent);
+        IReadOnlyList<TextContent> textContents = await ollamaImageToTextService.GetTextContentsAsync(_imageContent);
 
         Assert.NotNull(textContents);
         Assert.True(textContents.Count > 0);
@@ -167,7 +169,7 @@ public sealed class OllamaImageToTextServiceTests : IDisposable
 
         _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-        await Assert.ThrowsAsync<OllamaHttpOperationException>(() => ollamaTextGenerationService.GetTextContentsAsync(this._imageContent));
+        await Assert.ThrowsAsync<OllamaHttpOperationException>(() => ollamaTextGenerationService.GetTextContentsAsync(_imageContent));
     }
 
     public void Dispose()

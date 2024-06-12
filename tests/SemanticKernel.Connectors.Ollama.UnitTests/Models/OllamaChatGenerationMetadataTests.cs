@@ -1,4 +1,4 @@
-namespace SemanticKernel.Connectors.UnitTests.Ollama.Models;
+namespace SemanticKernel.Connectors.Ollama.UnitTests.Models;
 
 public class OllamaChatGenerationMetadataTests
 {

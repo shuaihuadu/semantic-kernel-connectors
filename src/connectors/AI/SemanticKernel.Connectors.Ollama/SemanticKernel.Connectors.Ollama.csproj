@@ -7,15 +7,15 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>latest</LangVersion>
 		<NoWarn>$(NoWarn);SKEXP0001,SKEXP0070</NoWarn>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<Import Project="$(SolutionDir)/nuget/nuget-package.props" />
+	<Import Project="$(SolutionDir)/nuget/ollam-nuget-package.props" />
 	<Import Project="$(SolutionDir)/src/InternalUtilities/src/InternalUtilities.props" />
 
 	<PropertyGroup>
 		<Title>Semantic Kernel - Ollama Connectors</Title>
 		<Description>Semantic Kernel connectors for Ollama. Contains generation and embedding services.</Description>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -26,12 +26,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="$(SolutionDir)/src/InternalUtilities/test/AssertExtensions.cs" Link="%(RecursiveDir)%(Filename)%(Extension)" />
 		<Compile Include="$(SolutionDir)/src/InternalUtilities/test/HttpMessageHandlerStub.cs" Link="%(RecursiveDir)%(Filename)%(Extension)" />
+		<Compile Include="$(SolutionDir)/src/InternalUtilities/test/MockIReadOnlyDictionary.cs" Link="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\connectors\SemanticKernel.Connectors.Ollama\SemanticKernel.Connectors.Ollama.csproj" />
+	  <ProjectReference Include="..\..\src\connectors\AI\SemanticKernel.Connectors.Ollama\SemanticKernel.Connectors.Ollama.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -39,28 +39,28 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Ollama\TestData\chat_completion_test_invalid_response.json">
+	  <None Update="TestData\chat_completion_test_invalid_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\chat_completion_test_response.json">
+	  <None Update="TestData\chat_completion_test_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\chat_generation_test_stream_invalid_response.txt">
+	  <None Update="TestData\chat_generation_test_stream_invalid_response.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\chat_generation_test_stream_response.txt">
+	  <None Update="TestData\chat_generation_test_stream_response.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\text_embedding_test_response.json">
+	  <None Update="TestData\text_embedding_test_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\image_to_text_test_response.json">
+	  <None Update="TestData\image_to_text_test_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\text_generation_test_stream_response.txt">
+	  <None Update="TestData\text_generation_test_stream_response.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\text_generation_test_response.json">
+	  <None Update="TestData\text_generation_test_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
