@@ -121,6 +121,20 @@ public class HunyuanPromptExecutionSettings : PromptExecutionSettings
         }
     }
 
+    /// <summary>
+    /// The system prompt to use when generating text using a chat model.
+    /// </summary>
+    public string? ChatSystemPrompt
+    {
+        get => this._chatSystemPrompt;
+
+        set
+        {
+            this.ThrowIfFrozen();
+            this._chatSystemPrompt = value;
+        }
+    }
+
     /// <inheritdoc />
     public override PromptExecutionSettings Clone()
     {
@@ -141,4 +155,5 @@ public class HunyuanPromptExecutionSettings : PromptExecutionSettings
     private bool? _enableEnhancement;
     private bool? _streamModeration;
     private bool? _stream;
+    private string? _chatSystemPrompt;
 }

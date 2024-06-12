@@ -3,9 +3,9 @@
 /// <summary>
 /// Ollama embedding generation service.
 /// </summary>
-public sealed class OllamaTextEmbeddingGenerationService : OllamaBaseService, ITextEmbeddingGenerationService
+public sealed class OllamaTextEmbeddingGenerationService : ITextEmbeddingGenerationService
 {
-    private readonly OllamaClient _ollamaClient;
+    private readonly OllamaClientCore _core;
 
     private Dictionary<string, object?> AttributesInternal { get; } = [];
 
@@ -18,9 +18,9 @@ public sealed class OllamaTextEmbeddingGenerationService : OllamaBaseService, IT
     /// <param name="model">The model name.</param>
     /// <param name="endpoint">The uri endpoint including the port where Ollama server is hosted</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaTextEmbeddingGenerationService(string model, Uri endpoint, ILoggerFactory? loggerFactory = null) : base(model, endpoint, loggerFactory)
+    public OllamaTextEmbeddingGenerationService(string model, Uri endpoint, ILoggerFactory? loggerFactory = null)
     {
-        this._ollamaClient = new OllamaClient(endpoint, loggerFactory);
+        this._core = new OllamaClientCore(model, endpoint, loggerFactory);
 
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
@@ -39,25 +39,14 @@ public sealed class OllamaTextEmbeddingGenerationService : OllamaBaseService, IT
     /// <param name="model">The model name.</param>
     /// <param name="httpClient">HTTP client to be used for communication with the Ollama API.</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaTextEmbeddingGenerationService(string model, HttpClient httpClient, ILoggerFactory? loggerFactory = null) : base(model, httpClient, loggerFactory)
+    public OllamaTextEmbeddingGenerationService(string model, HttpClient httpClient, ILoggerFactory? loggerFactory = null)
     {
-        this._ollamaClient = new OllamaClient(httpClient, loggerFactory);
+        this._core = new OllamaClientCore(model, httpClient, loggerFactory);
 
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
     /// <inheritdoc/>
-    public async Task<IList<ReadOnlyMemory<float>>> GenerateEmbeddingsAsync(IList<string> data, Kernel? kernel = null, CancellationToken cancellationToken = default)
-    {
-        Verify.NotNullOrEmpty(data, nameof(data));
-
-        if (data.Count > 1)
-        {
-            throw new NotSupportedException("Currently this interface does not support multiple embeddings results per data item, use only one data item");
-        }
-
-        EmbeddingResponse response = await this._ollamaClient.GenerateEmbeddingAsync(this._model, data.First(), cancellationToken);
-
-        return [response.Embedding];
-    }
+    public Task<IList<ReadOnlyMemory<float>>> GenerateEmbeddingsAsync(IList<string> data, Kernel? kernel = null, CancellationToken cancellationToken = default)
+        => this._core.GenerateEmbeddingsAsync(data, cancellationToken);
 }

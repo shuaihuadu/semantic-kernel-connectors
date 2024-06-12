@@ -1,6 +1,4 @@
-﻿using SemanticKernel.Connectors.Ollama.UnitTests;
-
-namespace SemanticKernel.Connectors.Ollama.UnitTests.Services;
+﻿namespace SemanticKernel.Connectors.Ollama.UnitTests.Services;
 
 public sealed class OllamaTextEmbeddingGenerationServiceTests : IDisposable
 {

@@ -3,9 +3,9 @@
 /// <summary>
 /// Ollama image to text service
 /// </summary>
-public class OllamaImageToTextService : OllamaTextBaseService, IImageToTextService
+public class OllamaImageToTextService : IImageToTextService
 {
-    private readonly OllamaClient _ollamaClient;
+    private readonly OllamaClientCore _core;
 
     private Dictionary<string, object?> AttributesInternal { get; } = [];
 
@@ -18,9 +18,9 @@ public class OllamaImageToTextService : OllamaTextBaseService, IImageToTextServi
     /// <param name="model">The model name.</param>
     /// <param name="endpoint">The uri endpoint including the port where Ollama server is hosted</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaImageToTextService(string model, Uri endpoint, ILoggerFactory? loggerFactory = null) : base(model, endpoint, loggerFactory)
+    public OllamaImageToTextService(string model, Uri endpoint, ILoggerFactory? loggerFactory = null)
     {
-        this._ollamaClient = new OllamaClient(endpoint, loggerFactory);
+        this._core = new OllamaClientCore(model, endpoint, loggerFactory);
 
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
@@ -39,9 +39,9 @@ public class OllamaImageToTextService : OllamaTextBaseService, IImageToTextServi
     /// <param name="model">The model name.</param>
     /// <param name="httpClient">HTTP client to be used for communication with the Ollama API.</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaImageToTextService(string model, HttpClient httpClient, ILoggerFactory? loggerFactory = null) : base(model, httpClient, loggerFactory)
+    public OllamaImageToTextService(string model, HttpClient httpClient, ILoggerFactory? loggerFactory = null)
     {
-        this._ollamaClient = new OllamaClient(httpClient, loggerFactory);
+        this._core = new OllamaClientCore(model, httpClient, loggerFactory);
 
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
@@ -50,38 +50,6 @@ public class OllamaImageToTextService : OllamaTextBaseService, IImageToTextServi
     /// <remarks>
     /// Due to the <see cref="IImageToTextService"/> current not support for adding prompt to images, So temporarily use the default Prompt："What is in this image?"
     /// </remarks>
-    public async Task<IReadOnlyList<TextContent>> GetTextContentsAsync(ImageContent content, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)
-    {
-        Verify.NotNull(content, nameof(content));
-        Verify.NotNull(content.Data, nameof(content.Data));
-        Verify.NotNullOrEmpty(content.Data.Value.ToArray(), nameof(content.Data));
-
-        const string prompt = "What is in this image?";
-
-        string model = executionSettings?.ModelId ?? this._model;
-
-        OllamaPromptExecutionSettings ollamaPromptExecutionSettings = OllamaPromptExecutionSettings.FromExecutionSettings(executionSettings);
-
-        string imageBase64Data = Convert.ToBase64String(content.Data.Value.ToArray());
-
-        using Activity? activity = ModelDiagnostics.StartCompletionActivity(this._endpoint, model, ModelProvider, prompt, executionSettings);
-
-        GenerateCompletionResponse response;
-
-        try
-        {
-            response = await this._ollamaClient.GenerateCompletionAsync(CreateGenerateCompletionOptions(model, prompt, ollamaPromptExecutionSettings, [imageBase64Data]), cancellationToken).ConfigureAwait(false);
-        }
-        catch (Exception ex) when (activity is not null)
-        {
-            activity.SetError(ex);
-            throw;
-        }
-
-        TextContent textContent = GetTextContentFromResponse(response);
-
-        activity?.SetCompletionResponse([textContent]);
-
-        return [textContent];
-    }
+    public Task<IReadOnlyList<TextContent>> GetTextContentsAsync(ImageContent content, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)
+        => this._core.GenerateTextFromImageAsync(content, executionSettings, cancellationToken);
 }
