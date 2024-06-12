@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>IdeaTech.SemanticKernel.Connectors.Hunyuan</AssemblyName>
+		<RootNamespace>$(AssemblyName)</RootNamespace>
+		<TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>latest</LangVersion>
+		<NoWarn>$(NoWarn);SKEXP0001,SKEXP0070</NoWarn>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<Import Project="$(SolutionDir)/src/InternalUtilities/src/InternalUtilities.props" />
+	
+	<PropertyGroup>
+		<Title>Semantic Kernel - Tencent Hunyuan Connectors</Title>
+		<Description>Semantic Kernel connectors for Tencent Hunyuan. Contains generation and embedding services.</Description>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.14.1" />
+		<PackageReference Include="TencentCloudSDK.Hunyuan" Version="3.0.1024" />
+	</ItemGroup>
+	<ItemGroup>
+		<InternalsVisibleTo Include="SemanticKernel.Connectors.UnitTests" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Extensions\" />
+	</ItemGroup>
+
+</Project>

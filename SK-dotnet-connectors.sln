@@ -7,22 +7,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{50E48105-588
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "connectors", "connectors", "{B644C6C1-6F71-4670-80DE-4B001728389A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticKernel.Connectors.Ollama", "src\connectors\SemanticKernel.Connectors.Ollama\SemanticKernel.Connectors.Ollama.csproj", "{3B384499-DBAE-4E88-B8BD-3C149DD3B978}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{0306A42B-FE19-4171-BF2A-C47BC0290F9E}"
 	ProjectSection(SolutionItems) = preProject
-		nuget\nuget-package.props = nuget\nuget-package.props
+		nuget\ollam-nuget-package.props = nuget\ollam-nuget-package.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A3A46D98-F411-4BA6-A83A-914619B9B80B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticKernel.Connectors.UnitTests", "tests\SemanticKernel.Connectors.UnitTests\SemanticKernel.Connectors.UnitTests.csproj", "{B753F03B-4BDD-4865-9D5A-6EC8C91C6F56}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AI", "AI", "{D6E981A2-5334-4464-AA8F-BB5488216E23}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{58FC3435-1D1F-440B-8D33-B63FF2F3948C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Concepts", "samples\Concepts\Concepts.csproj", "{B0A87A40-C0F0-4082-9B11-D9BA38E4FB0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concepts", "samples\Concepts\Concepts.csproj", "{B0A87A40-C0F0-4082-9B11-D9BA38E4FB0D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticKernel.Connectors.Hunyuan", "src\connectors\AI\SemanticKernel.Connectors.Hunyuan\SemanticKernel.Connectors.Hunyuan.csproj", "{676D66AA-0B6C-4190-9A7E-0F47C9889B1F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticKernel.Connectors.Ollama", "src\connectors\AI\SemanticKernel.Connectors.Ollama\SemanticKernel.Connectors.Ollama.csproj", "{B9A10633-11CC-4A95-9081-7DB60F99766F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticKernel.Connectors.Hunyuan.UnitTests", "tests\SemanticKernel.Connectors.Hunyuan.UnitTests\SemanticKernel.Connectors.Hunyuan.UnitTests.csproj", "{5ED83B66-A090-45AE-ABA0-B031996E0532}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticKernel.Connectors.Ollama.UnitTests", "tests\SemanticKernel.Connectors.Ollama.UnitTests\SemanticKernel.Connectors.Ollama.UnitTests.csproj", "{306DD7CF-C571-48D7-8B71-FEA3DA972C5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,34 +35,48 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3B384499-DBAE-4E88-B8BD-3C149DD3B978}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B384499-DBAE-4E88-B8BD-3C149DD3B978}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B384499-DBAE-4E88-B8BD-3C149DD3B978}.Publish|Any CPU.ActiveCfg = Publish|Any CPU
-		{3B384499-DBAE-4E88-B8BD-3C149DD3B978}.Publish|Any CPU.Build.0 = Publish|Any CPU
-		{3B384499-DBAE-4E88-B8BD-3C149DD3B978}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B384499-DBAE-4E88-B8BD-3C149DD3B978}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B753F03B-4BDD-4865-9D5A-6EC8C91C6F56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B753F03B-4BDD-4865-9D5A-6EC8C91C6F56}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B753F03B-4BDD-4865-9D5A-6EC8C91C6F56}.Publish|Any CPU.ActiveCfg = Release|Any CPU
-		{B753F03B-4BDD-4865-9D5A-6EC8C91C6F56}.Publish|Any CPU.Build.0 = Release|Any CPU
-		{B753F03B-4BDD-4865-9D5A-6EC8C91C6F56}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B753F03B-4BDD-4865-9D5A-6EC8C91C6F56}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B0A87A40-C0F0-4082-9B11-D9BA38E4FB0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0A87A40-C0F0-4082-9B11-D9BA38E4FB0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0A87A40-C0F0-4082-9B11-D9BA38E4FB0D}.Publish|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0A87A40-C0F0-4082-9B11-D9BA38E4FB0D}.Publish|Any CPU.Build.0 = Debug|Any CPU
 		{B0A87A40-C0F0-4082-9B11-D9BA38E4FB0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0A87A40-C0F0-4082-9B11-D9BA38E4FB0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{676D66AA-0B6C-4190-9A7E-0F47C9889B1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{676D66AA-0B6C-4190-9A7E-0F47C9889B1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{676D66AA-0B6C-4190-9A7E-0F47C9889B1F}.Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{676D66AA-0B6C-4190-9A7E-0F47C9889B1F}.Publish|Any CPU.Build.0 = Debug|Any CPU
+		{676D66AA-0B6C-4190-9A7E-0F47C9889B1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{676D66AA-0B6C-4190-9A7E-0F47C9889B1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9A10633-11CC-4A95-9081-7DB60F99766F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9A10633-11CC-4A95-9081-7DB60F99766F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9A10633-11CC-4A95-9081-7DB60F99766F}.Publish|Any CPU.ActiveCfg = Publish|Any CPU
+		{B9A10633-11CC-4A95-9081-7DB60F99766F}.Publish|Any CPU.Build.0 = Publish|Any CPU
+		{B9A10633-11CC-4A95-9081-7DB60F99766F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9A10633-11CC-4A95-9081-7DB60F99766F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ED83B66-A090-45AE-ABA0-B031996E0532}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ED83B66-A090-45AE-ABA0-B031996E0532}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ED83B66-A090-45AE-ABA0-B031996E0532}.Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ED83B66-A090-45AE-ABA0-B031996E0532}.Publish|Any CPU.Build.0 = Debug|Any CPU
+		{5ED83B66-A090-45AE-ABA0-B031996E0532}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ED83B66-A090-45AE-ABA0-B031996E0532}.Release|Any CPU.Build.0 = Release|Any CPU
+		{306DD7CF-C571-48D7-8B71-FEA3DA972C5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{306DD7CF-C571-48D7-8B71-FEA3DA972C5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{306DD7CF-C571-48D7-8B71-FEA3DA972C5E}.Publish|Any CPU.ActiveCfg = Debug|Any CPU
+		{306DD7CF-C571-48D7-8B71-FEA3DA972C5E}.Publish|Any CPU.Build.0 = Debug|Any CPU
+		{306DD7CF-C571-48D7-8B71-FEA3DA972C5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{306DD7CF-C571-48D7-8B71-FEA3DA972C5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B644C6C1-6F71-4670-80DE-4B001728389A} = {50E48105-5883-42DF-AC64-FBCEF1B126A0}
-		{3B384499-DBAE-4E88-B8BD-3C149DD3B978} = {D6E981A2-5334-4464-AA8F-BB5488216E23}
-		{B753F03B-4BDD-4865-9D5A-6EC8C91C6F56} = {A3A46D98-F411-4BA6-A83A-914619B9B80B}
 		{D6E981A2-5334-4464-AA8F-BB5488216E23} = {B644C6C1-6F71-4670-80DE-4B001728389A}
 		{B0A87A40-C0F0-4082-9B11-D9BA38E4FB0D} = {58FC3435-1D1F-440B-8D33-B63FF2F3948C}
+		{676D66AA-0B6C-4190-9A7E-0F47C9889B1F} = {D6E981A2-5334-4464-AA8F-BB5488216E23}
+		{B9A10633-11CC-4A95-9081-7DB60F99766F} = {D6E981A2-5334-4464-AA8F-BB5488216E23}
+		{5ED83B66-A090-45AE-ABA0-B031996E0532} = {A3A46D98-F411-4BA6-A83A-914619B9B80B}
+		{306DD7CF-C571-48D7-8B71-FEA3DA972C5E} = {A3A46D98-F411-4BA6-A83A-914619B9B80B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14A5611D-1A7A-40AC-8BB9-A12AAF7B325E}

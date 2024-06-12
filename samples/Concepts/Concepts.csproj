@@ -11,6 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="IdeaTech.SemanticKernel.Connectors.Ollama" Version="1.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
@@ -49,10 +50,6 @@
 	  <EmbeddedResource Include="Resources\test_image.jpg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\src\connectors\SemanticKernel.Connectors.Ollama\SemanticKernel.Connectors.Ollama.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
