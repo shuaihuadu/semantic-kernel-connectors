@@ -8,13 +8,13 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
 
     public OllamaChatCompletionServiceTests()
     {
-        _messageHandlerStub = new HttpMessageHandlerStub();
-        _messageHandlerStub.ResponseToReturn.Content = new StringContent(OllamaTestHelper.GetTestResponse("chat_completion_test_response.json"));
-        _httpClient = new HttpClient(_messageHandlerStub, false)
+        this._messageHandlerStub = new HttpMessageHandlerStub();
+        this._messageHandlerStub.ResponseToReturn.Content = new StringContent(OllamaTestHelper.GetTestResponse("chat_completion_test_response.json"));
+        this._httpClient = new HttpClient(this._messageHandlerStub, false)
         {
             BaseAddress = TestConstants.FakeUri
         };
-        _mockLoggerFactory = new Mock<ILoggerFactory>();
+        this._mockLoggerFactory = new Mock<ILoggerFactory>();
     }
 
     #region Constructors
@@ -25,7 +25,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
     public void ConstructorWithUriStringWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaChatCompletionService ollamaChatCompletionService = includeLoggerFactory
-            ? new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeUriString, loggerFactory: _mockLoggerFactory.Object)
+            ? new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeUriString, loggerFactory: this._mockLoggerFactory.Object)
             : new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeUriString);
 
         Assert.NotNull(ollamaChatCompletionService);
@@ -38,7 +38,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
     public void ConstructorWithUriWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaChatCompletionService ollamaTextGenerationService = includeLoggerFactory
-            ? new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeUri, loggerFactory: _mockLoggerFactory.Object)
+            ? new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeUri, loggerFactory: this._mockLoggerFactory.Object)
             : new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeUri);
 
         Assert.NotNull(ollamaTextGenerationService);
@@ -51,7 +51,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
     public void ConstructorWithHttpClientWorksCorrectly(bool includeLoggerFactory)
     {
         OllamaChatCompletionService ollamaTextGenerationService = includeLoggerFactory
-            ? new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeHttpClient, loggerFactory: _mockLoggerFactory.Object)
+            ? new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeHttpClient, loggerFactory: this._mockLoggerFactory.Object)
             : new OllamaChatCompletionService(TestConstants.FakeModel, TestConstants.FakeHttpClient);
 
         Assert.NotNull(ollamaTextGenerationService);
@@ -93,7 +93,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
         ChatHistory history = new("You are an useful AI Assistant");
         history.AddUserMessage("Prompt");
 
-        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
+        this._messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(OllamaTestHelper.GetTestResponse("chat_completion_test_response.json"))
         };
@@ -103,7 +103,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
         Assert.NotNull(chatMessageContents);
         Assert.True(chatMessageContents.Count > 0);
 
-        byte[]? requestContent = _messageHandlerStub.RequestContent;
+        byte[]? requestContent = this._messageHandlerStub.RequestContent;
 
         Assert.NotNull(requestContent);
 
@@ -163,7 +163,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
 
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(OllamaTestHelper.GetTestResponse("chat_generation_test_stream_response.txt")));
 
-        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
+        this._messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StreamContent(stream)
         };
@@ -219,7 +219,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
         ChatHistory history = new("You are an useful AI Assistant");
         history.AddUserMessage("Prompt");
 
-        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
+        this._messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(OllamaTestHelper.GetTestResponse("chat_generation_test_stream_response.txt"))
         };
@@ -229,7 +229,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
         Assert.NotNull(chatMessageContents);
         Assert.True(chatMessageContents.Count > 0);
 
-        byte[]? requestContent = _messageHandlerStub.RequestContent;
+        byte[]? requestContent = this._messageHandlerStub.RequestContent;
 
         Assert.NotNull(requestContent);
 
@@ -254,7 +254,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
     {
         OllamaChatCompletionService ollamaChatCompletionService = new(TestConstants.FakeModel, _httpClient);
 
-        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
+        this._messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(OllamaTestHelper.GetTestResponse("chat_completion_test_invalid_response.json"))
         };
@@ -273,7 +273,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
 
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(OllamaTestHelper.GetTestResponse("chat_generation_test_stream_invalid_response.txt")));
 
-        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
+        this._messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StreamContent(stream)
         };
@@ -298,7 +298,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
     {
         OllamaChatCompletionService ollamaChatCompletionService = new(TestConstants.FakeModel, _httpClient);
 
-        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.BadRequest);
+        this._messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.BadRequest);
 
         await Assert.ThrowsAsync<OllamaHttpOperationException>(() => ollamaChatCompletionService.GetChatMessageContentsAsync([new ChatMessageContent(AuthorRole.User, "Prompt")]));
     }
@@ -308,7 +308,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
     {
         OllamaChatCompletionService ollamaChatCompletionService = new(TestConstants.FakeModel, _httpClient);
 
-        _messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+        this._messageHandlerStub.ResponseToReturn = new HttpResponseMessage(HttpStatusCode.InternalServerError);
 
         await Assert.ThrowsAsync<OllamaHttpOperationException>(async () =>
         {
@@ -320,7 +320,7 @@ public sealed class OllamaChatCompletionServiceTests : IDisposable
 
     public void Dispose()
     {
-        _httpClient.Dispose();
-        _messageHandlerStub.Dispose();
+        this._httpClient.Dispose();
+        this._messageHandlerStub.Dispose();
     }
 }

@@ -7,11 +7,11 @@ public class OllamaClientCoreTests
 
     public OllamaClientCoreTests()
     {
-        _httpClient = new HttpClient()
+        this._httpClient = new HttpClient()
         {
             BaseAddress = TestConstants.FakeUri
         };
-        _mockLoggerFactory = new Mock<ILoggerFactory>();
+        this._mockLoggerFactory = new Mock<ILoggerFactory>();
     }
 
     [Theory]
