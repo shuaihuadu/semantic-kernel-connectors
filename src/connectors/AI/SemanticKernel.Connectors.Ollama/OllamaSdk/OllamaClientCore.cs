@@ -242,7 +242,7 @@ internal sealed class OllamaClientCore
     {
         Verify.NotNullOrEmpty(data, nameof(data));
 
-        if (data.Count > 1)
+        if (data.Count != 1)
         {
             throw new NotSupportedException("Currently this interface does not support multiple embeddings results per data item, use only one data item");
         }

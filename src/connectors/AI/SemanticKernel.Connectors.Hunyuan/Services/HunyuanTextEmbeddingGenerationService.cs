@@ -1,9 +1,9 @@
 ﻿namespace IdeaTech.SemanticKernel.Connectors.Hunyuan;
 
 /// <summary>
-/// Hunyuan chat completion service.
+/// Hunyuan embedding generation service.
 /// </summary>
-public class HunyuanChatCompletionService : IChatCompletionService, ITextGenerationService
+public sealed class HunyuanTextEmbeddingGenerationService : ITextEmbeddingGenerationService
 {
     private Dictionary<string, object?> AttributesInternal { get; } = [];
 
@@ -13,7 +13,7 @@ public class HunyuanChatCompletionService : IChatCompletionService, ITextGenerat
     private readonly HunyuanClientCore _core;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HunyuanChatCompletionService"/> class.
+    /// Initializes a new instance of the <see cref="HunyuanTextEmbeddingGenerationService"/> class.
     /// </summary>
     /// <param name="model">The Hunyuan model for the chat completion service.</param>
     /// <param name="secretId">SecretId, can only be obtained from Tencent Cloud Management Console.</param>
@@ -21,13 +21,13 @@ public class HunyuanChatCompletionService : IChatCompletionService, ITextGenerat
     /// <param name="region">Region name, such as "ap-guangzhou".</param>
     /// <param name="token">Optional</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public HunyuanChatCompletionService(string model, string secretId, string secretKey, string? region = null, string? token = null, ILoggerFactory? loggerFactory = null)
+    public HunyuanTextEmbeddingGenerationService(string model, string secretId, string secretKey, string? region = null, string? token = null, ILoggerFactory? loggerFactory = null)
         : this(model, secretId, secretKey, 60, region, token, loggerFactory)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HunyuanChatCompletionService"/> class.
+    /// Initializes a new instance of the <see cref="HunyuanTextEmbeddingGenerationService"/> class.
     /// </summary>
     /// <param name="model">The Hunyuan model for the chat completion service.</param>
     /// <param name="secretId">SecretId, can only be obtained from Tencent Cloud Management Console.</param>
@@ -36,7 +36,7 @@ public class HunyuanChatCompletionService : IChatCompletionService, ITextGenerat
     /// <param name="region">Region name, such as "ap-guangzhou".</param>
     /// <param name="token">Optional</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public HunyuanChatCompletionService(string model, string secretId, string secretKey, int timeout, string? region = null, string? token = null, ILoggerFactory? loggerFactory = null)
+    public HunyuanTextEmbeddingGenerationService(string model, string secretId, string secretKey, int timeout, string? region = null, string? token = null, ILoggerFactory? loggerFactory = null)
     {
         this._core = new HunyuanClientCore(
             model: model,
@@ -54,17 +54,7 @@ public class HunyuanChatCompletionService : IChatCompletionService, ITextGenerat
         this.AttributesInternal.Add(AIServiceExtensions.ModelIdKey, model);
     }
 
-    /// <inheritdoc />
-    public Task<IReadOnlyList<ChatMessageContent>> GetChatMessageContentsAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default) => this._core.GetChatMessageContentsAsync(chatHistory, executionSettings, kernel, cancellationToken);
-
-    /// <inheritdoc />
-    public IAsyncEnumerable<StreamingChatMessageContent> GetStreamingChatMessageContentsAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default) => this._core.GetStreamingChatMessageContentsAsync(chatHistory, executionSettings, kernel, cancellationToken);
-
-    /// <inheritdoc />
-    public Task<IReadOnlyList<TextContent>> GetTextContentsAsync(string prompt, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)
-        => this._core.GetChatAsTextContentsAsync(prompt, executionSettings, kernel, cancellationToken);
-
-    /// <inheritdoc />
-    public IAsyncEnumerable<StreamingTextContent> GetStreamingTextContentsAsync(string prompt, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)
-        => this._core.GetChatAsTextStreamingContentsAsync(prompt, executionSettings, kernel, cancellationToken);
+    /// <inheritdoc/>
+    public Task<IList<ReadOnlyMemory<float>>> GenerateEmbeddingsAsync(IList<string> data, Kernel? kernel = null, CancellationToken cancellationToken = default)
+        => this._core.GetEmbeddingsAsync(data, kernel, cancellationToken);
 }

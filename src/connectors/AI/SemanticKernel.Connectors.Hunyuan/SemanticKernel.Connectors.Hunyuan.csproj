@@ -18,14 +18,17 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
+	  <Compile Remove="Extensions\**" />
+	  <EmbeddedResource Remove="Extensions\**" />
+	  <None Remove="Extensions\**" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.14.1" />
 		<PackageReference Include="TencentCloudSDK.Hunyuan" Version="3.0.1024" />
 	</ItemGroup>
 	<ItemGroup>
 		<InternalsVisibleTo Include="SemanticKernel.Connectors.UnitTests" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Extensions\" />
 	</ItemGroup>
 
 </Project>

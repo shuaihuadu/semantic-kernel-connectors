@@ -18,7 +18,11 @@ internal sealed class HunyuanClientCore
         this._logger = logger;
     }
 
-    internal async Task<IReadOnlyList<ChatMessageContent>> CompleteChatMessageAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings)
+    internal async Task<IReadOnlyList<ChatMessageContent>> GetChatMessageContentsAsync(
+        ChatHistory chatHistory,
+        PromptExecutionSettings? executionSettings,
+        Kernel? kernel = null,
+        CancellationToken cancellationToken = default)
     {
         string model = executionSettings?.ModelId ?? this._model;
 
@@ -51,7 +55,10 @@ internal sealed class HunyuanClientCore
         return chatContents;
     }
 
-    internal async IAsyncEnumerable<StreamingChatMessageContent> StreamingCompleteChatMessageAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings)
+    internal async IAsyncEnumerable<StreamingChatMessageContent> GetStreamingChatMessageContentsAsync(ChatHistory chatHistory,
+        PromptExecutionSettings? executionSettings,
+        Kernel? kernel = null,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         string model = executionSettings?.ModelId ?? this._model;
 
@@ -106,6 +113,92 @@ internal sealed class HunyuanClientCore
             activity?.Dispose();
             responseEnumerator.Dispose();
         }
+    }
+
+    internal async Task<IReadOnlyList<TextContent>> GetChatAsTextContentsAsync(
+        string text,
+        PromptExecutionSettings? executionSettings,
+        Kernel? kernel = null,
+        CancellationToken cancellationToken = default)
+    {
+        HunyuanPromptExecutionSettings chatSettings = HunyuanPromptExecutionSettings.FromExecutionSettings(executionSettings);
+
+        ChatHistory chatHistory = CreateNewChat(text, chatSettings);
+
+        return (await this.GetChatMessageContentsAsync(chatHistory, chatSettings).ConfigureAwait(false))
+            .Select(chatMessageContent => new TextContent(
+                chatMessageContent.Content,
+                chatMessageContent.ModelId,
+                chatMessageContent.Content,
+                Encoding.UTF8,
+                chatMessageContent.Metadata))
+            .ToList();
+    }
+
+    internal async IAsyncEnumerable<StreamingTextContent> GetChatAsTextStreamingContentsAsync(
+        string prompt,
+        PromptExecutionSettings? executionSettings,
+        Kernel? kernel,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        HunyuanPromptExecutionSettings chatSettings = HunyuanPromptExecutionSettings.FromExecutionSettings(executionSettings);
+        ChatHistory chat = CreateNewChat(prompt, chatSettings);
+
+        await foreach (StreamingChatMessageContent message in this.GetStreamingChatMessageContentsAsync(chat, executionSettings).ConfigureAwait(false))
+        {
+            yield return new StreamingTextContent(message.Content, message.ChoiceIndex, message.ModelId, message, Encoding.UTF8, message.Metadata);
+        }
+    }
+
+    internal async Task<IList<ReadOnlyMemory<float>>> GetEmbeddingsAsync(
+        IList<string> data,
+        Kernel? kernel,
+        CancellationToken cancellationToken)
+    {
+        if (data.Count != 1)
+        {
+            throw new NotSupportedException("Currently this interface does not support multiple embeddings results per data item, use only one data item");
+        }
+
+        List<ReadOnlyMemory<float>> result = new(data.Count);
+
+        GetEmbeddingRequest request = new()
+        {
+            Input = data.SingleOrDefault()
+        };
+
+        GetEmbeddingResponse response = await this._client.GetEmbedding(request).ConfigureAwait(false);
+
+        EmbeddingData[] embeddingsData = response.Data;
+
+        if (embeddingsData.Length != data.Count)
+        {
+            throw new KernelException($"Expected {data.Count} text embedding(s), but received {embeddingsData.Length}");
+        }
+
+        for (var i = 0; i < embeddingsData.Length; i++)
+        {
+            float?[] embeddings = embeddingsData[i].Embedding;
+
+            //🤣 Embedding and its element may be null
+            if (embeddings is not null && embeddings.Length > 0)
+            {
+                if (embeddings.Any(item => item is null))
+                {
+                    throw new KernelException("The result of the embedding contains null elements.");
+                }
+                else
+                {
+                    result.Add(new ReadOnlyMemory<float>(embeddings.Select(x => x!.Value).ToArray()));
+                }
+            }
+            else
+            {
+                throw new KernelException("The result of the embedding is null or empty");
+            }
+        }
+
+        return result;
     }
 
     private static List<ChatMessageContent> GetChatMessageContentFromResponse(ChatCompletionsResponse response, string modelId)
@@ -224,6 +317,27 @@ internal sealed class HunyuanClientCore
         {
             Data = { { "ResponseData", response } },
         };
+    }
+
+    private static ChatHistory CreateNewChat(string? text = null, HunyuanPromptExecutionSettings? executionSettings = null)
+    {
+        var chat = new ChatHistory();
+
+        // If settings is not provided, create a new chat with the text as the system prompt
+        AuthorRole textRole = AuthorRole.System;
+
+        if (!string.IsNullOrWhiteSpace(executionSettings?.ChatSystemPrompt))
+        {
+            chat.AddSystemMessage(executionSettings!.ChatSystemPrompt!);
+            textRole = AuthorRole.User;
+        }
+
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            chat.AddMessage(textRole, text!);
+        }
+
+        return chat;
     }
 
     #region Logging and Meter

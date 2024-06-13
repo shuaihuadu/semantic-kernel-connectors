@@ -14,6 +14,6 @@ internal static class OllamaTestHelper
 
     internal static string GetTestResponse(string fileName)
     {
-        return File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Ollama", "TestData", fileName));
+        return File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", fileName));
     }
 }

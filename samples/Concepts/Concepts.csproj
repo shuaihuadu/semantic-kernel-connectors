@@ -39,6 +39,7 @@
 	<Import Project="$(SolutionDir)/src/InternalUtilities/samples/SamplesInternalUtilities.props" />
 
 	<ItemGroup>
+	  <Compile Remove="D:\Github\semantic-kernel-connectors\src\InternalUtilities\samples\InternalUtilities\Env.cs" />
 	  <Compile Remove="D:\Github\SemanticKernel.Connectors\src\InternalUtilities\samples\InternalUtilities\Env.cs" />
 	</ItemGroup>
 
