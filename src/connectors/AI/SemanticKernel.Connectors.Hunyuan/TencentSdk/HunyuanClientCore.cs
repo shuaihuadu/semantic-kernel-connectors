@@ -30,7 +30,7 @@ internal sealed class HunyuanClientCore
         hunyuanPromptExecutionSettings.ModelId ??= this._model;
         hunyuanPromptExecutionSettings.Stream = false;
 
-        using var activity = ModelDiagnostics.StartCompletionActivity(new Uri(this._client.Endpoint), model, ModelProvider, chatHistory, hunyuanPromptExecutionSettings);
+        using var activity = ModelDiagnostics.StartCompletionActivity(this.GetChatGenerationEndpoint(), model, ModelProvider, chatHistory, hunyuanPromptExecutionSettings);
 
         ChatCompletionsRequest request = this.CreateChatRequest(chatHistory, hunyuanPromptExecutionSettings);
 
@@ -66,7 +66,7 @@ internal sealed class HunyuanClientCore
         hunyuanPromptExecutionSettings.ModelId ??= this._model;
         hunyuanPromptExecutionSettings.Stream = true;
 
-        using var activity = ModelDiagnostics.StartCompletionActivity(new Uri(this._client.Endpoint), model, ModelProvider, chatHistory, hunyuanPromptExecutionSettings);
+        using var activity = ModelDiagnostics.StartCompletionActivity(this.GetChatGenerationEndpoint(), model, ModelProvider, chatHistory, hunyuanPromptExecutionSettings);
 
         ChatCompletionsRequest request = this.CreateChatRequest(chatHistory, hunyuanPromptExecutionSettings);
 
@@ -123,7 +123,7 @@ internal sealed class HunyuanClientCore
     {
         HunyuanPromptExecutionSettings chatSettings = HunyuanPromptExecutionSettings.FromExecutionSettings(executionSettings);
 
-        ChatHistory chatHistory = CreateNewChat(text, chatSettings);
+        ChatHistory chatHistory = CreateChatHistory(text, chatSettings);
 
         return (await this.GetChatMessageContentsAsync(chatHistory, chatSettings).ConfigureAwait(false))
             .Select(chatMessageContent => new TextContent(
@@ -142,9 +142,9 @@ internal sealed class HunyuanClientCore
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         HunyuanPromptExecutionSettings chatSettings = HunyuanPromptExecutionSettings.FromExecutionSettings(executionSettings);
-        ChatHistory chat = CreateNewChat(prompt, chatSettings);
+        ChatHistory chatHistory = CreateChatHistory(prompt, chatSettings);
 
-        await foreach (StreamingChatMessageContent message in this.GetStreamingChatMessageContentsAsync(chat, executionSettings).ConfigureAwait(false))
+        await foreach (StreamingChatMessageContent message in this.GetStreamingChatMessageContentsAsync(chatHistory, executionSettings).ConfigureAwait(false))
         {
             yield return new StreamingTextContent(message.Content, message.ChoiceIndex, message.ModelId, message, Encoding.UTF8, message.Metadata);
         }
@@ -319,25 +319,39 @@ internal sealed class HunyuanClientCore
         };
     }
 
-    private static ChatHistory CreateNewChat(string? text = null, HunyuanPromptExecutionSettings? executionSettings = null)
+    private static ChatHistory CreateChatHistory(string? text = null, HunyuanPromptExecutionSettings? executionSettings = null)
     {
-        var chat = new ChatHistory();
+        ChatHistory chatHistory = [];
 
         // If settings is not provided, create a new chat with the text as the system prompt
         AuthorRole textRole = AuthorRole.System;
 
         if (!string.IsNullOrWhiteSpace(executionSettings?.ChatSystemPrompt))
         {
-            chat.AddSystemMessage(executionSettings!.ChatSystemPrompt!);
+            chatHistory.AddSystemMessage(executionSettings!.ChatSystemPrompt!);
             textRole = AuthorRole.User;
         }
 
         if (!string.IsNullOrWhiteSpace(text))
         {
-            chat.AddMessage(textRole, text!);
+            chatHistory.AddMessage(textRole, text!);
         }
 
-        return chat;
+        return chatHistory;
+    }
+
+    private Uri? GetChatGenerationEndpoint()
+    {
+        try
+        {
+            Verify.ValidateUrl(this._client.Endpoint);
+
+            return new Uri(this._client.Endpoint);
+        }
+        catch
+        {
+            return default;
+        }
     }
 
     #region Logging and Meter
@@ -401,5 +415,4 @@ internal sealed class HunyuanClientCore
             description: "Number of total tokens used");
 
     #endregion
-
 }

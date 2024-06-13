@@ -22,9 +22,7 @@ public class HunyuanChatCompletionService : IChatCompletionService, ITextGenerat
     /// <param name="token">Optional</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     public HunyuanChatCompletionService(string model, string secretId, string secretKey, string? region = null, string? token = null, ILoggerFactory? loggerFactory = null)
-        : this(model, secretId, secretKey, 60, region, token, loggerFactory)
-    {
-    }
+        : this(model, secretId, secretKey, 60, region, token, loggerFactory) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HunyuanChatCompletionService"/> class.
@@ -55,10 +53,12 @@ public class HunyuanChatCompletionService : IChatCompletionService, ITextGenerat
     }
 
     /// <inheritdoc />
-    public Task<IReadOnlyList<ChatMessageContent>> GetChatMessageContentsAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default) => this._core.GetChatMessageContentsAsync(chatHistory, executionSettings, kernel, cancellationToken);
+    public Task<IReadOnlyList<ChatMessageContent>> GetChatMessageContentsAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)
+        => this._core.GetChatMessageContentsAsync(chatHistory, executionSettings, kernel, cancellationToken);
 
     /// <inheritdoc />
-    public IAsyncEnumerable<StreamingChatMessageContent> GetStreamingChatMessageContentsAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default) => this._core.GetStreamingChatMessageContentsAsync(chatHistory, executionSettings, kernel, cancellationToken);
+    public IAsyncEnumerable<StreamingChatMessageContent> GetStreamingChatMessageContentsAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)
+        => this._core.GetStreamingChatMessageContentsAsync(chatHistory, executionSettings, kernel, cancellationToken);
 
     /// <inheritdoc />
     public Task<IReadOnlyList<TextContent>> GetTextContentsAsync(string prompt, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)

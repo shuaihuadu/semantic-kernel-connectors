@@ -22,9 +22,7 @@ public sealed class HunyuanTextEmbeddingGenerationService : ITextEmbeddingGenera
     /// <param name="token">Optional</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     public HunyuanTextEmbeddingGenerationService(string model, string secretId, string secretKey, string? region = null, string? token = null, ILoggerFactory? loggerFactory = null)
-        : this(model, secretId, secretKey, 60, region, token, loggerFactory)
-    {
-    }
+        : this(model, secretId, secretKey, 60, region, token, loggerFactory) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HunyuanTextEmbeddingGenerationService"/> class.

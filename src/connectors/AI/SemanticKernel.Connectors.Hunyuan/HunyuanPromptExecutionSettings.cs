@@ -123,11 +123,15 @@ public class HunyuanPromptExecutionSettings : PromptExecutionSettings
 
     /// <summary>
     /// The system prompt to use when generating text using a chat model.
+    /// Defaults to "Assistant is a large language model."
+    /// Only works for text generation service.
     /// </summary>
+    /// <remarks>
+    /// Please note that the current system prompt for the Hunyuan model is not very stable!
+    /// </remarks>
     public string? ChatSystemPrompt
     {
         get => this._chatSystemPrompt;
-
         set
         {
             this.ThrowIfFrozen();
@@ -155,5 +159,5 @@ public class HunyuanPromptExecutionSettings : PromptExecutionSettings
     private bool? _enableEnhancement;
     private bool? _streamModeration;
     private bool? _stream;
-    private string? _chatSystemPrompt;
+    private string? _chatSystemPrompt = "Assistant is a large language model.";
 }
