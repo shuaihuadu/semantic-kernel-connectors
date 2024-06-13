@@ -39,28 +39,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Ollama\TestData\chat_completion_test_invalid_response.json">
+	  <None Update="TestData\chat_completion_test_invalid_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\chat_completion_test_response.json">
+	  <None Update="TestData\chat_completion_test_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\chat_generation_test_stream_invalid_response.txt">
+	  <None Update="TestData\chat_generation_test_stream_response.txt">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="Ollama\TestData\chat_generation_test_stream_response.txt">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Ollama\TestData\text_embedding_test_response.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Ollama\TestData\image_to_text_test_response.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Ollama\TestData\text_generation_test_stream_response.txt">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Ollama\TestData\text_generation_test_response.json">
+	  <None Update="TestData\text_embedding_test_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

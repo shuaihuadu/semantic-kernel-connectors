@@ -1,0 +1,26 @@
+{
+  "Response": {
+    "RequestId": "11111111-d59f-42a1-90ed-b4956fb14650",
+    "Note": "以上内容为AI生成，不代表开发者立场，请勿删除或修改本标记",
+    "Choices": [
+      {
+        "Message": {
+          "Role": "assistant",
+          "Content": "你好！很高兴为您提供帮助，请问您有什么问题？"
+        },
+        "FinishReason": "stop"
+      }
+    ],
+    "Created": 1718297402,
+    "Id": "22222222-d59f-42a1-90ed-b4956fb14650",
+    "Usage": {
+      "PromptTokens": 3,
+      "CompletionTokens": 12,
+      "TotalTokens": 15
+    },
+    "ErrorMsg": {
+      "Code": 3597823239,
+      "Msg": "success"
+    }
+  }
+}
