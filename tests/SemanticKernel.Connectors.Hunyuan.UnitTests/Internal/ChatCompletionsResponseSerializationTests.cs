@@ -172,7 +172,6 @@ public sealed class ChatCompletionsResponseSerializationTests
         Assert.Empty(delta.Content);
     }
 
-
     [Fact]
     public void ChatCompletionsResponseSerializationUsageShouldWorkCorrectly()
     {

@@ -58,6 +58,48 @@ public class HunyuanTextEmbeddingGenerationServiceTests : IDisposable
         Assert.Equal(1024, embeddings[0].Length);
     }
 
+    [Fact]
+    public async Task ShouldThrowKernelWhenEmbeddingIsNull()
+    {
+        HunyuanTextEmbeddingGenerationService hunyuanTextEmbeddingGenerationService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey);
+
+        this._messageHandlerStub.ResponseToReturn.Content = new StringContent(HunyuanTestHelper.GetTestResponse("text_embedding_test_invalid_response1.json"));
+
+        HunyuanTestHelper.SetTestHttpClient(hunyuanTextEmbeddingGenerationService, this._httpClient);
+
+        KernelException exception = await Assert.ThrowsAsync<KernelException>(async () => await hunyuanTextEmbeddingGenerationService.GenerateEmbeddingsAsync(["hello"]));
+
+        Assert.Equal("The result of the embedding is null or empty.", exception.Message);
+    }
+
+    [Fact]
+    public async Task ShouldThrowKernelWhenEmbeddingElementIsNull()
+    {
+        HunyuanTextEmbeddingGenerationService hunyuanTextEmbeddingGenerationService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey);
+
+        this._messageHandlerStub.ResponseToReturn.Content = new StringContent(HunyuanTestHelper.GetTestResponse("text_embedding_test_invalid_response2.json"));
+
+        HunyuanTestHelper.SetTestHttpClient(hunyuanTextEmbeddingGenerationService, this._httpClient);
+
+        KernelException exception = await Assert.ThrowsAsync<KernelException>(async () => await hunyuanTextEmbeddingGenerationService.GenerateEmbeddingsAsync(["hello"]));
+
+        Assert.Equal("The result of the embedding contains null elements.", exception.Message);
+    }
+
+    [Fact]
+    public async Task ShouldThrowKernelWhenEmbeddingCountNotEqual()
+    {
+        HunyuanTextEmbeddingGenerationService hunyuanTextEmbeddingGenerationService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey);
+
+        this._messageHandlerStub.ResponseToReturn.Content = new StringContent(HunyuanTestHelper.GetTestResponse("text_embedding_test_invalid_response3.json"));
+
+        HunyuanTestHelper.SetTestHttpClient(hunyuanTextEmbeddingGenerationService, this._httpClient);
+
+        KernelException exception = await Assert.ThrowsAsync<KernelException>(async () => await hunyuanTextEmbeddingGenerationService.GenerateEmbeddingsAsync(["hello"]));
+
+        Assert.Equal("Expected 1 text embedding(s), but received 2.", exception.Message);
+    }
+
     public void Dispose()
     {
         this._httpClient.Dispose();

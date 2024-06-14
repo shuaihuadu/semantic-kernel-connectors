@@ -1,4 +1,6 @@
-﻿namespace SemanticKernel.Connectors.Hunyuan.UnitTests;
+﻿using Microsoft.VisualStudio.TestPlatform.TestHost;
+
+namespace SemanticKernel.Connectors.Hunyuan.UnitTests;
 
 [ExcludeFromCodeCoverage]
 internal static class HunyuanTestHelper
@@ -29,6 +31,13 @@ internal static class HunyuanTestHelper
 
     internal static void SetTestHttpClient<T>(T service, HttpClient httpClient) where T : IAIService
     {
+        using ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Trace);
+        });
+
+        ILogger logger = loggerFactory.CreateLogger<Program>();
+
         HunyuanClient hunyuanClient = new(TestConstants.FakeCredential, TestConstants.FakeRegion)
         {
             HttpClient = httpClient
@@ -39,7 +48,7 @@ internal static class HunyuanTestHelper
             TestConstants.FakeCredential,
             TestConstants.FakeRegion,
             TestConstants.FakeClientProfile,
-            TestConstants.FakeLogger);
+            logger);
 
         Type coreType = core.GetType();
 

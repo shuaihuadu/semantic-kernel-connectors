@@ -16,6 +16,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
 		<PackageReference Include="Moq" Version="4.20.70" />
 		<PackageReference Include="xunit" Version="2.8.1" />
@@ -39,13 +40,25 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="TestData\chat_completion_test_invalid_response.json">
+	  <None Update="TestData\chat_completion_test_null_values_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="TestData\chat_completion_test_response.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="TestData\chat_generation_test_stream_invalid_response.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="TestData\chat_generation_test_stream_response.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestData\text_embedding_test_invalid_response3.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestData\text_embedding_test_invalid_response2.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="TestData\text_embedding_test_invalid_response1.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="TestData\text_embedding_test_response.json">

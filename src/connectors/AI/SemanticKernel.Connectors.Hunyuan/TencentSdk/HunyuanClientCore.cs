@@ -13,6 +13,11 @@ internal sealed class HunyuanClientCore
 
     internal HunyuanClientCore(string model, Credential credential, string region, ClientProfile clientProfile, ILogger logger)
     {
+        Verify.NotNullOrWhiteSpace(model, nameof(model));
+        Verify.NotNull(credential, nameof(credential));
+        Verify.NotNullOrWhiteSpace(credential.SecretId, nameof(credential.SecretId));
+        Verify.NotNullOrWhiteSpace(credential.SecretKey, nameof(credential.SecretKey));
+
         this._model = model;
         this._client = new HunyuanClient(credential, region, clientProfile);
         this._logger = logger;
@@ -82,7 +87,7 @@ internal sealed class HunyuanClientCore
             throw;
         }
 
-        IEnumerator<StreamingChatMessageContent> responseEnumerator = ProcessChatResponseStream(response, model);
+        IEnumerator<AbstractSSEModel.SSE> responseEnumerator = response.GetEnumerator();
 
         List<StreamingChatMessageContent>? streamedContents = activity is not null ? [] : null;
 
@@ -102,11 +107,20 @@ internal sealed class HunyuanClientCore
                     activity.SetError(ex);
                     throw;
                 }
+
+                JsonDocument document = JsonDocument.Parse(responseEnumerator.Current.Data);
+
+                ChatCompletionsResponse? sseResponse = ChatCompletionsResponseSerialization.DeserializeChatCompletionsResponse(document.RootElement);
+
+                if (sseResponse is not null)
+                {
+                    StreamingChatMessageContent streamingChatMessageContent = GetStreamingChatMessageContentFromStreamResponse(sseResponse, model);
+
+                    streamedContents?.Add(streamingChatMessageContent);
+
+                    yield return streamingChatMessageContent;
+                }
             }
-
-            streamedContents?.Add(responseEnumerator.Current);
-
-            yield return responseEnumerator.Current;
         }
         finally
         {
@@ -144,7 +158,7 @@ internal sealed class HunyuanClientCore
         HunyuanPromptExecutionSettings chatSettings = HunyuanPromptExecutionSettings.FromExecutionSettings(executionSettings);
         ChatHistory chatHistory = CreateChatHistory(prompt, chatSettings);
 
-        await foreach (StreamingChatMessageContent message in this.GetStreamingChatMessageContentsAsync(chatHistory, executionSettings).ConfigureAwait(false))
+        await foreach (StreamingChatMessageContent message in this.GetStreamingChatMessageContentsAsync(chatHistory, executionSettings, cancellationToken: cancellationToken).ConfigureAwait(false))
         {
             yield return new StreamingTextContent(message.Content, message.ChoiceIndex, message.ModelId, message, Encoding.UTF8, message.Metadata);
         }
@@ -173,7 +187,7 @@ internal sealed class HunyuanClientCore
 
         if (embeddingsData.Length != data.Count)
         {
-            throw new KernelException($"Expected {data.Count} text embedding(s), but received {embeddingsData.Length}");
+            throw new KernelException($"Expected {data.Count} text embedding(s), but received {embeddingsData.Length}.");
         }
 
         for (var i = 0; i < embeddingsData.Length; i++)
@@ -194,7 +208,7 @@ internal sealed class HunyuanClientCore
             }
             else
             {
-                throw new KernelException("The result of the embedding is null or empty");
+                throw new KernelException("The result of the embedding is null or empty.");
             }
         }
 
@@ -220,7 +234,7 @@ internal sealed class HunyuanClientCore
             };
 
             chatMessageContents.Add(new ChatMessageContent(
-                role: new AuthorRole(choice.Message.Role ?? AuthorRole.Assistant.ToString()),
+                role: new AuthorRole(string.IsNullOrEmpty(choice.Message.Role) ? AuthorRole.Assistant.ToString() : choice.Message.Role),
                 content: choice.Message.Content,
                 modelId: modelId,
                 innerContent: response,
@@ -232,12 +246,9 @@ internal sealed class HunyuanClientCore
 
     private ChatCompletionsRequest CreateChatRequest(ChatHistory chatHistory, HunyuanPromptExecutionSettings hunyuanFaceExecutionSettings)
     {
-        if (this._logger.IsEnabled(LogLevel.Trace))
-        {
-            this._logger.LogTrace("ChatHistory: {ChatHistory}, Settings: {Settings}",
-                JsonSerializer.Serialize(chatHistory),
-                JsonSerializer.Serialize(hunyuanFaceExecutionSettings));
-        }
+        this._logger.LogTrace("ChatHistory: {ChatHistory}, Settings: {Settings}",
+            JsonSerializer.Serialize(chatHistory),
+            JsonSerializer.Serialize(hunyuanFaceExecutionSettings));
 
         ChatCompletionsRequest request = FromChatHistoryAndExecutionSettings(chatHistory, hunyuanFaceExecutionSettings);
 
@@ -262,31 +273,10 @@ internal sealed class HunyuanClientCore
         };
     }
 
-    private static IEnumerator<StreamingChatMessageContent> ProcessChatResponseStream(ChatCompletionsResponse response, string modelId)
-    {
-        IEnumerator<AbstractSSEModel.SSE> responseEnumerator = response.GetEnumerator();
-
-        while (true)
-        {
-            if (!responseEnumerator.MoveNext())
-            {
-                break;
-            }
-            else
-            {
-                ChatCompletionsResponse? sseResponse = JsonSerializer.Deserialize<ChatCompletionsResponse>(responseEnumerator.Current.Data);
-                if (sseResponse is not null)
-                {
-                    yield return GetStreamingChatMessageContentFromStreamResponse(sseResponse, modelId);
-                }
-            }
-
-        }
-    }
-
     private static StreamingChatMessageContent GetStreamingChatMessageContentFromStreamResponse(ChatCompletionsResponse response, string modelId)
     {
         Choice? choice = response.Choices?.FirstOrDefault();
+
         if (choice is not null)
         {
             HunyuanChatCompletionMetadata metadata = new()
@@ -301,16 +291,16 @@ internal sealed class HunyuanClientCore
                 Delta = choice.Delta
             };
 
-            var streamChat = new StreamingChatMessageContent(
-                choice.Delta?.Role is not null ? new AuthorRole(choice.Delta.Role) : null,
-                choice.Delta?.Content,
-                response,
-                0,
-                modelId,
-                Encoding.UTF8,
-                metadata);
+            StreamingChatMessageContent streamingChatMessageContent = new(
+               role: string.IsNullOrEmpty(choice.Delta?.Role) ? AuthorRole.Assistant : new AuthorRole(choice.Delta?.Role!),
+                content: choice.Delta?.Content,
+                innerContent: response,
+                choiceIndex: 0,
+                modelId: modelId,
+                encoding: Encoding.UTF8,
+                metadata: metadata);
 
-            return streamChat;
+            return streamingChatMessageContent;
         }
 
         throw new KernelException("Unexpected response from model")
@@ -364,15 +354,12 @@ internal sealed class HunyuanClientCore
             return;
         }
 
-        if (this._logger.IsEnabled(LogLevel.Information))
-        {
-            this._logger.LogInformation(
-                "Prompt tokens: {PromptTokens}. Completion tokens: {CompletionTokens}. Total tokens: {TotalTokens}. ModelId: {ModelId}.",
-                chatCompletionResponse.Usage.PromptTokens,
-                chatCompletionResponse.Usage.CompletionTokens,
-                chatCompletionResponse.Usage.TotalTokens,
-                executionSettings.ModelId);
-        }
+        this._logger.LogInformation(
+            "Prompt tokens: {PromptTokens}. Completion tokens: {CompletionTokens}. Total tokens: {TotalTokens}. ModelId: {ModelId}.",
+            chatCompletionResponse.Usage.PromptTokens,
+            chatCompletionResponse.Usage.CompletionTokens,
+            chatCompletionResponse.Usage.TotalTokens,
+            executionSettings.ModelId);
 
         promptTokensCounter.Add(chatCompletionResponse.Usage.PromptTokens ?? 0);
         completionTokensCounter.Add(chatCompletionResponse.Usage.CompletionTokens ?? 0);

@@ -1,0 +1,21 @@
+{
+  "Response": {
+    "Data": [
+      {
+        "Embedding": [ 1.12131231000123, 2.32423423 ],
+        "Index": 0,
+        "Object": "embedding"
+      },
+      {
+        "Embedding": [ 1.534354, 1.2432432 ],
+        "Index": 0,
+        "Object": "embedding"
+      }
+    ],
+    "RequestId": "476b9d8a-89ea-4efa-aa48-e72da11769f3",
+    "Usage": {
+      "PromptTokens": 12,
+      "TotalTokens": 12
+    }
+  }
+}

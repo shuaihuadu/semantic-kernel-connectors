@@ -1,0 +1,3 @@
+data: {"Note":"以上内容为AI生成，不代表开发者立场，请勿删除或修改本标记","Choices":[{"Delta":{"Role":"assistant","Content":"Hey"},"FinishReason":""}],"Created":1718305959,"Id":"358ad04b-712a-4b0c-9581-209f12efd732","Usage":{"PromptTokens":3,"CompletionTokens":1,"TotalTokens":4}}
+
+data: {"Note":"以上内容为AI生成，不代表开发者立场，请勿删除或修改本标记","Choices":null,"Created":1718305959,"Id":"358ad04b-712a-4b0c-9581-209f12efd732","Usage":{"PromptTokens":3,"CompletionTokens":2,"TotalTokens":5}}
