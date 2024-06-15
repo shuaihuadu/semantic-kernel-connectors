@@ -1,16 +1,21 @@
-
-
 # Semantic Kernel connectors
 
 Semantic Kernel connectors, Contains generation and embedding services.
 
-For the connectors which **not** provided by the official.
+For the connectors which **<i style='color:#FF0000;'>not</i>** provided by the official.
 
 ## Semantic Kernel Connectors for Ollama
 
-Semantic Kernel Connectors for Ollama: Based on [Ollama.NET](https://github.com/shuaihuadu/ollama.net)
+[Semantic Kernel Connectors for Ollama](https://github.com/shuaihuadu/semantic-kernel-connectors): Based on [Ollama.NET](https://github.com/shuaihuadu/ollama.net)
 
 [![NuGet](https://img.shields.io/nuget/v/IdeaTech.SemanticKernel.Connectors.Ollama)](https://www.nuget.org/packages/IdeaTech.SemanticKernel.Connectors.Ollama)
+
+
+## Semantic Kernel Connectors for Tencent Hunyuan
+
+[Semantic Kernel Connectors for Hunyuan](https://github.com/shuaihuadu/semantic-kernel-connectors): Based on [TencentCloud SDK](https://github.com/TencentCloud/tencentcloud-sdk-dotnet)
+
+[![NuGet](https://img.shields.io/nuget/v/IdeaTech.SemanticKernel.Connectors.Hunyuan)](https://www.nuget.org/packages/IdeaTech.SemanticKernel.Connectors.Hunyuan)
 
 
 # About Semantic Kernel
