@@ -10,7 +10,7 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<Import Project="$(SolutionDir)/nuget/ollam-nuget-package.props" />
+	<Import Project="$(SolutionDir)/nuget/ollama-nuget-package.props" />
 	<Import Project="$(SolutionDir)/src/InternalUtilities/src/InternalUtilities.props" />
 
 	<PropertyGroup>
