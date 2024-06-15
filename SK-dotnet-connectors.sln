@@ -9,7 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "connectors", "connectors", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{0306A42B-FE19-4171-BF2A-C47BC0290F9E}"
 	ProjectSection(SolutionItems) = preProject
-		nuget\ollam-nuget-package.props = nuget\ollam-nuget-package.props
+		nuget\hunyuan-nuget-package.props = nuget\hunyuan-nuget-package.props
+		nuget\ollama-nuget-package.props = nuget\ollama-nuget-package.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A3A46D98-F411-4BA6-A83A-914619B9B80B}"

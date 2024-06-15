@@ -10,6 +10,7 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<Import Project="$(SolutionDir)/nuget/hunyuan-nuget-package.props" />
 	<Import Project="$(SolutionDir)/src/InternalUtilities/src/InternalUtilities.props" />
 	
 	<PropertyGroup>
