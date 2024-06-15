@@ -20,25 +20,8 @@ public class HunyuanTextEmbeddingGenerationServiceTests : IDisposable
     public void ConstructorWorksCorrectly(bool includeLoggerFactory)
     {
         HunyuanTextEmbeddingGenerationService hunyuanTextEmbeddingGenerationService = includeLoggerFactory
-            ? new HunyuanTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, TestConstants
-            .FakeRegion, TestConstants.FakeToken, loggerFactory: this._mockLoggerFactory.Object)
-            : new HunyuanTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, TestConstants
-            .FakeRegion, loggerFactory: this._mockLoggerFactory.Object);
-
-        Assert.NotNull(hunyuanTextEmbeddingGenerationService);
-        Assert.Equal(TestConstants.FakeModel, hunyuanTextEmbeddingGenerationService.Attributes["ModelId"]);
-    }
-
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void ConstructorWithTimeoutWorksCorrectly(bool includeLoggerFactory)
-    {
-        HunyuanTextEmbeddingGenerationService hunyuanTextEmbeddingGenerationService = includeLoggerFactory
-            ? new HunyuanTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, 100, TestConstants
-            .FakeRegion, TestConstants.FakeToken, loggerFactory: this._mockLoggerFactory.Object)
-            : new HunyuanTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, 100, TestConstants
-            .FakeRegion, loggerFactory: this._mockLoggerFactory.Object);
+            ? new HunyuanTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, 10, TestConstants.FakeRegion, TestConstants.FakeToken, loggerFactory: this._mockLoggerFactory.Object)
+            : new HunyuanTextEmbeddingGenerationService(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, 10, TestConstants.FakeRegion, loggerFactory: this._mockLoggerFactory.Object);
 
         Assert.NotNull(hunyuanTextEmbeddingGenerationService);
         Assert.Equal(TestConstants.FakeModel, hunyuanTextEmbeddingGenerationService.Attributes["ModelId"]);

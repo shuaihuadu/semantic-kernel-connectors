@@ -1,8 +1,12 @@
 ﻿global using IdeaTech.SemanticKernel.Connectors.Hunyuan;
+global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.SemanticKernel;
 global using Microsoft.SemanticKernel.ChatCompletion;
+global using Microsoft.SemanticKernel.Embeddings;
+global using Microsoft.SemanticKernel.Memory;
 global using Microsoft.SemanticKernel.Services;
+global using Microsoft.SemanticKernel.TextGeneration;
 global using Moq;
 global using System;
 global using System.Collections;

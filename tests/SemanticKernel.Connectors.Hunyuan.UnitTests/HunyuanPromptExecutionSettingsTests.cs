@@ -55,13 +55,14 @@ public class HunyuanPromptExecutionSettingsTests
             "ChatSystemPrompt":"Assistant is a large language model."
         }
         """;
-        var executionSettings = JsonSerializer.Deserialize<HunyuanPromptExecutionSettings>(configPayload);
+
+        HunyuanPromptExecutionSettings? executionSettings = JsonSerializer.Deserialize<HunyuanPromptExecutionSettings>(configPayload);
         executionSettings!.ExtensionData = new Dictionary<string, object>
         {
             ["key1"] = 1
         };
 
-        var clone = executionSettings.Clone() as HunyuanPromptExecutionSettings;
+        HunyuanPromptExecutionSettings? clone = executionSettings.Clone() as HunyuanPromptExecutionSettings;
 
         Assert.NotNull(clone);
         Assert.Equal(executionSettings.ModelId, clone.ModelId);
@@ -75,5 +76,28 @@ public class HunyuanPromptExecutionSettingsTests
         Assert.Equal(executionSettings.StreamModeration, clone.StreamModeration);
         Assert.Equal(executionSettings.Stream, clone.Stream);
         Assert.Equal(executionSettings.ChatSystemPrompt, clone.ChatSystemPrompt);
+    }
+
+    [Fact]
+    public void PromptExecutionSettingsWithNullValuesCloneWorksAsExpected()
+    {
+        string configPayload = """
+        {
+            "Temperature": 0.5,
+            "TopP": 0.4,
+            "EnableEnhancement": true,
+            "StreamModeration": false,
+            "Stream": false,
+            "ChatSystemPrompt":null
+        }
+        """;
+
+        HunyuanPromptExecutionSettings? executionSettings = JsonSerializer.Deserialize<HunyuanPromptExecutionSettings>(configPayload);
+
+        HunyuanPromptExecutionSettings? clone = executionSettings!.Clone() as HunyuanPromptExecutionSettings;
+
+        Assert.NotNull(clone);
+        Assert.Null(clone.ExtensionData);
+        Assert.Equal("Assistant is a large language model.", clone.ChatSystemPrompt);
     }
 }

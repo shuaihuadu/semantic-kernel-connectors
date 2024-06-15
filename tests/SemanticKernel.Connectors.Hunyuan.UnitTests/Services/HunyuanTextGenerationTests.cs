@@ -18,7 +18,7 @@ public sealed class HunyuanTextGenerationTests : IDisposable
     [Fact]
     public async Task GetChatMessageContentHandlesSettingCorrectlyAsync()
     {
-        HunyuanChatCompletionService hunyuanChatCompletionService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, TestConstants.FakeRegion, TestConstants.FakeToken, loggerFactory: this._mockLoggerFactory.Object);
+        HunyuanChatCompletionService hunyuanChatCompletionService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, 10, TestConstants.FakeRegion, TestConstants.FakeToken, loggerFactory: this._mockLoggerFactory.Object);
 
         HunyuanTestHelper.SetTestHttpClient(hunyuanChatCompletionService, this._httpClient);
 
@@ -58,7 +58,7 @@ public sealed class HunyuanTextGenerationTests : IDisposable
     [Fact]
     public async Task GetStreamingTextContentsWorksCorrectlyAsync()
     {
-        HunyuanChatCompletionService hunyuanChatCompletionService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, TestConstants.FakeRegion, TestConstants.FakeToken, loggerFactory: this._mockLoggerFactory.Object);
+        HunyuanChatCompletionService hunyuanChatCompletionService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, 10, TestConstants.FakeRegion, TestConstants.FakeToken, loggerFactory: this._mockLoggerFactory.Object);
 
         HunyuanTestHelper.SetTestHttpClient(hunyuanChatCompletionService, this._httpClient);
 

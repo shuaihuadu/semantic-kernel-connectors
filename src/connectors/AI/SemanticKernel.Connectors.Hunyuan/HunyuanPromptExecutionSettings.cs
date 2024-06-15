@@ -22,9 +22,9 @@ public class HunyuanPromptExecutionSettings : PromptExecutionSettings
 
         var json = JsonSerializer.Serialize(executionSettings);
 
-        HunyuanPromptExecutionSettings? ollamaPromptExecutionSettings = JsonSerializer.Deserialize<HunyuanPromptExecutionSettings>(json, JsonOptionsCache.ReadPermissive);
+        HunyuanPromptExecutionSettings? hunyuanPromptExecutionSettings = JsonSerializer.Deserialize<HunyuanPromptExecutionSettings>(json, JsonOptionsCache.ReadPermissive);
 
-        return ollamaPromptExecutionSettings!;
+        return hunyuanPromptExecutionSettings!;
     }
 
     /// <summary>

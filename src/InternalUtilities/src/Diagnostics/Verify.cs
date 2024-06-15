@@ -1,11 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.SemanticKernel;
@@ -176,6 +172,14 @@ internal static partial class Verify
                     throw new ArgumentException($"The function has two or more parameters with the same name '{p.Name}'");
                 }
             }
+        }
+    }
+
+    internal static void GreatThan(int value, int minValue, [CallerArgumentExpression(nameof(value))] string? parameterName = null)
+    {
+        if (value < minValue)
+        {
+            throw new ArgumentException($"The value of '{parameterName}' must great than {minValue}.");
         }
     }
 

@@ -18,24 +18,17 @@ public sealed class HunyuanTextEmbeddingGenerationService : ITextEmbeddingGenera
     /// <param name="model">The Hunyuan model for the chat completion service.</param>
     /// <param name="secretId">SecretId, can only be obtained from Tencent Cloud Management Console.</param>
     /// <param name="secretKey">SecretKey, can only be obtained from Tencent Cloud Management Console.</param>
-    /// <param name="region">Region name, such as "ap-guangzhou".</param>
-    /// <param name="token">Optional</param>
-    /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public HunyuanTextEmbeddingGenerationService(string model, string secretId, string secretKey, string? region = null, string? token = null, ILoggerFactory? loggerFactory = null)
-        : this(model, secretId, secretKey, 60, region, token, loggerFactory) { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HunyuanTextEmbeddingGenerationService"/> class.
-    /// </summary>
-    /// <param name="model">The Hunyuan model for the chat completion service.</param>
-    /// <param name="secretId">SecretId, can only be obtained from Tencent Cloud Management Console.</param>
-    /// <param name="secretKey">SecretKey, can only be obtained from Tencent Cloud Management Console.</param>
     /// <param name="timeout">Time unit,default 60 seconds.</param>
     /// <param name="region">Region name, such as "ap-guangzhou".</param>
     /// <param name="token">Optional</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public HunyuanTextEmbeddingGenerationService(string model, string secretId, string secretKey, int timeout, string? region = null, string? token = null, ILoggerFactory? loggerFactory = null)
+    public HunyuanTextEmbeddingGenerationService(string model, string secretId, string secretKey, int timeout = 60, string? region = null, string? token = null, ILoggerFactory? loggerFactory = null)
     {
+        Verify.NotNullOrWhiteSpace(model);
+        Verify.NotNullOrWhiteSpace(secretId);
+        Verify.NotNullOrWhiteSpace(secretKey);
+        Verify.GreatThan(timeout, 0);
+
         this._core = new HunyuanClientCore(
             model: model,
             credential: new Credential { SecretId = secretId, SecretKey = secretKey, Token = token },
