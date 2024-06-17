@@ -18,7 +18,7 @@ public static class HunyuanServiceCollectionExtensions
     /// <param name="region">Region name, such as "ap-guangzhou".</param>
     /// <param name="token">Optional</param>
     /// <param name="serviceId">A local identifier for the given AI service.</param>
-    /// <returns>The same instance as <paramref name="builder"/>.</returns>
+    /// <returns>The same instance as <paramref name="services"/>.</returns>
     public static IServiceCollection AddHunyuanTextGeneration(this IServiceCollection services, string model, string secretId, string secretKey, int timeout = 60, string? region = null, string? token = null, string? serviceId = null)
     {
         Verify.NotNull(services);
@@ -46,8 +46,8 @@ public static class HunyuanServiceCollectionExtensions
     /// <param name="region">Region name, such as "ap-guangzhou".</param>
     /// <param name="token">Optional</param>
     /// <param name="serviceId">A local identifier for the given AI service.</param>
-    /// <returns>The same instance as <paramref name="builder"/>.</returns>
-    public static IServiceCollection AddHunyuanChatCompletion(this IServiceCollection services, string model, string secretId, string secretKey, int timeout, string? region = null, string? token = null, string? serviceId = null)
+    /// <returns>The same instance as <paramref name="services"/>.</returns>
+    public static IServiceCollection AddHunyuanChatCompletion(this IServiceCollection services, string model, string secretId, string secretKey, int timeout = 60, string? region = null, string? token = null, string? serviceId = null)
     {
         Verify.NotNull(services);
         Verify.NotNullOrWhiteSpace(model);
@@ -75,8 +75,8 @@ public static class HunyuanServiceCollectionExtensions
     /// <param name="region">Region name, such as "ap-guangzhou".</param>
     /// <param name="token">Optional</param>
     /// <param name="serviceId">A local identifier for the given AI service.</param>
-    /// <returns>The same instance as <paramref name="builder"/>.</returns>
-    public static IServiceCollection AddHunyuanTextEmbeddingGeneration(this IServiceCollection services, string model, string secretId, string secretKey, int timeout, string? region = null, string? token = null, string? serviceId = null)
+    /// <returns>The same instance as <paramref name="services"/>.</returns>
+    public static IServiceCollection AddHunyuanTextEmbeddingGeneration(this IServiceCollection services, string model, string secretId, string secretKey, int timeout = 60, string? region = null, string? token = null, string? serviceId = null)
     {
         Verify.NotNull(services);
         Verify.NotNullOrWhiteSpace(model);

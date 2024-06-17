@@ -47,7 +47,7 @@ public static class HunyuanKernelBuilderExtensions
     /// <param name="token">Optional</param>
     /// <param name="serviceId">A local identifier for the given AI service.</param>
     /// <returns>The same instance as <paramref name="builder"/>.</returns>
-    public static IKernelBuilder AddHunyuanChatCompletion(this IKernelBuilder builder, string model, string secretId, string secretKey, int timeout, string? region = null, string? token = null, string? serviceId = null)
+    public static IKernelBuilder AddHunyuanChatCompletion(this IKernelBuilder builder, string model, string secretId, string secretKey, int timeout = 60, string? region = null, string? token = null, string? serviceId = null)
     {
         Verify.NotNull(builder);
         Verify.NotNullOrWhiteSpace(model);
@@ -76,7 +76,7 @@ public static class HunyuanKernelBuilderExtensions
     /// <param name="token">Optional</param>
     /// <param name="serviceId">A local identifier for the given AI service.</param>
     /// <returns>The same instance as <paramref name="builder"/>.</returns>
-    public static IKernelBuilder AddHunyuanTextEmbeddingGeneration(this IKernelBuilder builder, string model, string secretId, string secretKey, int timeout, string? region = null, string? token = null, string? serviceId = null)
+    public static IKernelBuilder AddHunyuanTextEmbeddingGeneration(this IKernelBuilder builder, string model, string secretId, string secretKey, int timeout = 60, string? region = null, string? token = null, string? serviceId = null)
     {
         Verify.NotNull(builder);
         Verify.NotNullOrWhiteSpace(model);
