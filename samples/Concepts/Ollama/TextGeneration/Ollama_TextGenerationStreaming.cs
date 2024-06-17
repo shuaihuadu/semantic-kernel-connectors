@@ -1,6 +1,6 @@
 ﻿using Microsoft.SemanticKernel.TextGeneration;
 
-namespace TextGeneration;
+namespace Ollama.TextGeneration;
 
 public class Ollama_TextGenerationStreaming(ITestOutputHelper output) : BaseTest(output)
 {
@@ -31,7 +31,7 @@ public class Ollama_TextGenerationStreaming(ITestOutputHelper output) : BaseTest
             model: TestConfiguration.Ollama.ModelId,
             endpoint: TestConfiguration.Ollama.Endpoint);
 
-        return this.TextGenerationStreamAsync(textGeneration);
+        return TextGenerationStreamAsync(textGeneration);
     }
 
     private async Task TextGenerationStreamAsync(ITextGenerationService textGeneration)

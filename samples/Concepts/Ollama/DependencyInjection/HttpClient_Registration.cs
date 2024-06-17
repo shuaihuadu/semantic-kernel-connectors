@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace DependencyInjection;
+namespace Ollama.DependencyInjection;
 
 // These examples show how to use HttpClient and HttpClientFactory within SK SDK.
 public class HttpClient_Registration(ITestOutputHelper output) : BaseTest(output)
@@ -15,7 +15,7 @@ public class HttpClient_Registration(ITestOutputHelper output) : BaseTest(output
         IServiceCollection serviceCollection = new ServiceCollection();
         serviceCollection.AddHttpClient();
 
-        var kernel = serviceCollection.AddTransient<Kernel>((sp) =>
+        var kernel = serviceCollection.AddTransient((sp) =>
         {
             var factory = sp.GetRequiredService<IHttpClientFactory>();
 
@@ -42,7 +42,7 @@ public class HttpClient_Registration(ITestOutputHelper output) : BaseTest(output
             client.BaseAddress = new Uri(TestConfiguration.Ollama.Endpoint, UriKind.Absolute);
         });
 
-        var kernel = serviceCollection.AddTransient<Kernel>((sp) =>
+        var kernel = serviceCollection.AddTransient((sp) =>
         {
             var factory = sp.GetRequiredService<IHttpClientFactory>();
 

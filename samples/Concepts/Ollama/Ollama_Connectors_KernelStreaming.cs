@@ -1,10 +1,10 @@
-﻿namespace ChatCompletion;
+﻿namespace Ollama;
 
 /// <summary>
 /// This example shows how you can use Streaming with Kernel.
 /// </summary>
 /// <param name="output"></param>
-public class Connectors_KernelStreaming(ITestOutputHelper output) : BaseTest(output)
+public class Ollama_Connectors_KernelStreaming(ITestOutputHelper output) : BaseTest(output)
 {
     [Fact]
     public async Task RunAsync()

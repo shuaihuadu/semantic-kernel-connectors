@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace DependencyInjection;
+namespace Ollama.DependencyInjection;
 
 public class Kernel_Building(ITestOutputHelper output) : BaseTest(output)
 {

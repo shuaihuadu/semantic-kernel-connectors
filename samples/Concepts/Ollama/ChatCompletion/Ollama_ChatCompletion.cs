@@ -1,4 +1,4 @@
-﻿namespace ChatCompletion;
+﻿namespace Ollama.ChatCompletion;
 
 public class Ollama_ChatCompletion(ITestOutputHelper output) : BaseTest(output)
 {

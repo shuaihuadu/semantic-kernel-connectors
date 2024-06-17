@@ -1,6 +1,6 @@
 ﻿using Microsoft.SemanticKernel.Embeddings;
 
-namespace Memory;
+namespace Ollama.Memory;
 
 public class Ollama_EmbeddingGeneration(ITestOutputHelper output) : BaseTest(output)
 {

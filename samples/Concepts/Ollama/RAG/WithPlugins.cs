@@ -1,7 +1,7 @@
 ﻿using Microsoft.SemanticKernel.Memory;
 using Microsoft.SemanticKernel.Plugins.Memory;
 
-namespace RAG;
+namespace Ollama.RAG;
 
 public class WithPlugins(ITestOutputHelper output) : BaseTest(output)
 {

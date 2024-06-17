@@ -1,7 +1,7 @@
 ﻿using Microsoft.SemanticKernel.ImageToText;
 using Resources;
 
-namespace ImageToText;
+namespace Ollama.ImageToText;
 
 /// <summary>
 /// Represents a class that demonstrates image-to-text functionality.

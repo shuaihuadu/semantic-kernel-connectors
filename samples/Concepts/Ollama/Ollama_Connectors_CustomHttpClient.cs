@@ -1,6 +1,6 @@
-﻿namespace ChatCompletion;
+﻿namespace Ollama;
 
-public class Connectors_CustomHttpClient(ITestOutputHelper output) : BaseTest(output)
+public class Ollama_Connectors_CustomHttpClient(ITestOutputHelper output) : BaseTest(output)
 {
     [Fact]
     public void UseCustomHttpClient()

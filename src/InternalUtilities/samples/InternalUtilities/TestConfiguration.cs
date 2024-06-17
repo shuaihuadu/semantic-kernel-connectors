@@ -46,6 +46,8 @@ public sealed class TestConfiguration
 
     public static OllamaConfig Ollama => LoadSection<OllamaConfig>();
 
+    public static HunyuanConfiguration Hunyuan => LoadSection<HunyuanConfiguration>();
+
     private static T LoadSection<T>([CallerMemberName] string? caller = null)
     {
         if (s_instance is null)
@@ -281,5 +283,12 @@ public sealed class TestConfiguration
             this.TenantId = tenantId;
             this.RedirectUri = redirectUri;
         }
+    }
+
+    public class HunyuanConfiguration
+    {
+        public string SecretId { get; set; }
+
+        public string SecretKey { get; set; }
     }
 }

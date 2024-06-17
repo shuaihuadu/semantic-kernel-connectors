@@ -1,4 +1,4 @@
-﻿namespace ChatCompletion;
+﻿namespace Ollama.ChatCompletion;
 
 // The following example shows how to use Semantic Kernel with streaming Chat Completion
 public class Ollama_ChatCompletionStreaming(ITestOutputHelper output) : BaseTest(output)
@@ -10,7 +10,7 @@ public class Ollama_ChatCompletionStreaming(ITestOutputHelper output) : BaseTest
 
         OllamaChatCompletionService chatCompletionService = new(TestConfiguration.Ollama.ModelId, TestConfiguration.Ollama.Endpoint);
 
-        return this.StartStreamingChatAsync(chatCompletionService);
+        return StartStreamingChatAsync(chatCompletionService);
     }
 
     private async Task StartStreamingChatAsync(IChatCompletionService chatCompletionService)
