@@ -1,12 +1,17 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 internal sealed class OllamaClientCore
 {
     private const string ModelProvider = "ollama";
 
     private readonly string _model;
+
     private readonly ILogger _logger;
+
     private readonly OllamaClient _client;
+
     private readonly Uri _endpoint;
 
     #region Client Core
@@ -35,7 +40,9 @@ internal sealed class OllamaClientCore
     /// <param name="model">The model name.</param>
     /// <param name="endpoint">The uri string endpoint including the port where Ollama server is hosted</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    internal OllamaClientCore(string model, string endpoint, ILoggerFactory? loggerFactory = null) : this(model, new Uri(endpoint), loggerFactory) { }
+    internal OllamaClientCore(string model, string endpoint, ILoggerFactory? loggerFactory = null) : this(model, new Uri(endpoint), loggerFactory)
+    {
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OllamaClientCore"/> class.
@@ -262,7 +269,7 @@ internal sealed class OllamaClientCore
         Verify.NotNull(content.Data, nameof(content.Data));
         Verify.NotNullOrEmpty(content.Data.Value.ToArray(), nameof(content.Data));
 
-        const string prompt = "What is in this image?";
+        string prompt = "What is in this image?";
 
         string model = executionSettings?.ModelId ?? this._model;
 
@@ -290,6 +297,7 @@ internal sealed class OllamaClientCore
 
         return [textContent];
     }
+
     #endregion
 
     #region Logging and Meter

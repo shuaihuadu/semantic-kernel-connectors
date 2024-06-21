@@ -1,4 +1,6 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 internal static class AuthorRoleExtensions
 {

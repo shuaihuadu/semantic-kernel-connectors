@@ -1,4 +1,6 @@
-﻿namespace Microsoft.SemanticKernel;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace Microsoft.SemanticKernel;
 
 /// <summary>
 /// Provides extension methods for the <see cref="IServiceCollection"/> class to configure Ollama connectors.
@@ -84,7 +86,6 @@ public static class OllamaServiceCollectionExtensions
         return services;
     }
 
-
     /// <summary>
     /// Adds an Ollama chat completion service with the specified configuration.
     /// </summary>
@@ -103,8 +104,8 @@ public static class OllamaServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> instance to augment.</param>
     /// <param name="model">The name of the Ollama model.</param>
-    /// <param name="serviceId">A local identifier for the given AI service.</param>
     /// <param name="httpClient">The HttpClient to use with this service.</param>
+    /// <param name="serviceId">A local identifier for the given AI service.</param>
     /// <returns>The same instance as <paramref name="services"/>.</returns>
     public static IServiceCollection AddOllamaChatCompletion(this IServiceCollection services, string model, HttpClient httpClient, string? serviceId = null)
     {
@@ -117,6 +118,7 @@ public static class OllamaServiceCollectionExtensions
 
         return services;
     }
+
     #endregion
 
     #region Text Embedding
@@ -153,7 +155,6 @@ public static class OllamaServiceCollectionExtensions
     {
         return AddOllamaTextEmbeddingGeneration(services, model, new Uri(endpoint), serviceId);
     }
-
 
     /// <summary>
     /// Adds an Ollama text embedding generation service with the specified configuration.

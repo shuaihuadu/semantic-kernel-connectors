@@ -1,4 +1,6 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 /// <summary>
 /// Ollama embedding generation service.
@@ -31,7 +33,9 @@ public sealed class OllamaTextEmbeddingGenerationService : ITextEmbeddingGenerat
     /// <param name="model">The model name.</param>
     /// <param name="endpoint">The uri string endpoint including the port where Ollama server is hosted</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaTextEmbeddingGenerationService(string model, string endpoint, ILoggerFactory? loggerFactory = null) : this(model, new Uri(endpoint), loggerFactory) { }
+    public OllamaTextEmbeddingGenerationService(string model, string endpoint, ILoggerFactory? loggerFactory = null) : this(model, new Uri(endpoint), loggerFactory)
+    {
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OllamaTextEmbeddingGenerationService"/> class.

@@ -1,4 +1,6 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 /// <summary>
 /// Ollama chat completion service.
@@ -8,6 +10,7 @@ public sealed class OllamaChatCompletionService : IChatCompletionService
     private readonly OllamaClientCore _core;
 
     private Dictionary<string, object?> AttributesInternal { get; } = [];
+
     /// <inheritdoc />
     public IReadOnlyDictionary<string, object?> Attributes => this.AttributesInternal;
 
@@ -30,7 +33,9 @@ public sealed class OllamaChatCompletionService : IChatCompletionService
     /// <param name="model">The model name.</param>
     /// <param name="endpoint">The uri string endpoint including the port where Ollama server is hosted</param>
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
-    public OllamaChatCompletionService(string model, string endpoint, ILoggerFactory? loggerFactory = null) : this(model, new Uri(endpoint), loggerFactory) { }
+    public OllamaChatCompletionService(string model, string endpoint, ILoggerFactory? loggerFactory = null) : this(model, new Uri(endpoint), loggerFactory)
+    {
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OllamaChatCompletionService"/> class.

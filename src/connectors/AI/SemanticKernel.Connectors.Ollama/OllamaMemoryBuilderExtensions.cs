@@ -1,4 +1,6 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 /// <summary>
 /// Provides extension methods for the <see cref="MemoryBuilder"/> class to configure Ollama connectors.

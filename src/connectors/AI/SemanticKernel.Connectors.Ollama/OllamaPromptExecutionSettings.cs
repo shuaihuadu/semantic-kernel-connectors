@@ -1,4 +1,6 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 /// <summary>
 /// Ollama Execution Settings.
@@ -77,10 +79,10 @@ public sealed class OllamaPromptExecutionSettings : PromptExecutionSettings
     /// Controls how long the model will stay loaded into memory following the request (default: 5m).
     /// <para>The keep_alive parameter can be set to:</para>
     /// <list type="bullet"> a duration string (such as "10m" or "24h")
-    /// <item> a number in seconds(such as 3600) </item> 
-    /// <item> any negative number which will keep the model loaded in memory(e.g. -1 or "-1m") </item> 
-    /// <item> '0' which will unload the model immediately after generating a response </item> 
-    /// </list> 
+    /// <item> a number in seconds(such as 3600) </item>
+    /// <item> any negative number which will keep the model loaded in memory(e.g. -1 or "-1m") </item>
+    /// <item> '0' which will unload the model immediately after generating a response </item>
+    /// </list>
     /// </summary>
     [JsonPropertyName("keep_alive")]
     public double KeepAlive
@@ -227,14 +229,24 @@ public sealed class OllamaPromptExecutionSettings : PromptExecutionSettings
     }
 
     private double _frequencyPenalty = 1.1;
+
     private double _presencePenalty = 0.8;
+
     private long _seed = 0;
+
     private List<string>? _stop;
+
     private double _temperature = 0.8;
+
     private double _topP = 0.9;
+
     private int _maxTokens = 2048;
+
     private double _keepAlive = 3000;
+
     private int _topK = 40;
+
     private string? _format;
+
     private string? _systemPrompt = "Assistant is a large language model.";
 }

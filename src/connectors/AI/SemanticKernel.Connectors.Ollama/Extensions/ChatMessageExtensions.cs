@@ -1,4 +1,6 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 internal static class ChatMessageExtensions
 {
@@ -24,11 +26,11 @@ internal static class ChatMessageExtensions
     /// </summary>
     /// <param name="message">The sk chat message content.</param>
     /// <returns></returns>
-    static string[] GetChatMessageContentImages(this ChatMessageContent message)
+    private static string[] GetChatMessageContentImages(this ChatMessageContent message)
     {
         List<string> result = [];
 
-        foreach (var item in message.Items)
+        foreach (KernelContent? item in message.Items)
         {
             if (item is ImageContent imageContent
                 && imageContent is not null

@@ -1,14 +1,20 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Ollama;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace IdeaTech.SemanticKernel.Connectors.Ollama;
 
 /// <summary>
 /// Represents the metadata of a Ollama chat completion.
 /// </summary>
 public sealed class OllamaChatGenerationMetadata : ReadOnlyDictionary<string, object?>
 {
-    internal OllamaChatGenerationMetadata() : base(new Dictionary<string, object?>()) { }
+    internal OllamaChatGenerationMetadata() : base(new Dictionary<string, object?>())
+    {
+    }
 
     /// <inheritdoc />
-    private OllamaChatGenerationMetadata(IDictionary<string, object?> dictionary) : base(dictionary) { }
+    private OllamaChatGenerationMetadata(IDictionary<string, object?> dictionary) : base(dictionary)
+    {
+    }
 
     internal OllamaChatGenerationMetadata(ChatCompletionResponse response) : this()
     {
@@ -117,5 +123,5 @@ public sealed class OllamaChatGenerationMetadata : ReadOnlyDictionary<string, ob
 
     private void SetValueInDictionary(object? value, string propertyName) => this.Dictionary[propertyName] = value;
 
-    private object? GetValueFromDictionary(string propertyName) => this.Dictionary.TryGetValue(propertyName, out var value) ? value : null;
+    private object? GetValueFromDictionary(string propertyName) => this.Dictionary.TryGetValue(propertyName, out object? value) ? value : null;
 }
