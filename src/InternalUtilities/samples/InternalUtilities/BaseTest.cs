@@ -1,7 +1,7 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.SemanticKernel;
 
 public abstract class BaseTest
 {

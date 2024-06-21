@@ -1,9 +1,13 @@
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
 namespace SemanticKernel.Connectors.Hunyuan.UnitTests.Services;
 
 public sealed class HunyuanTextGenerationTests : IDisposable
 {
     private readonly HttpMessageHandlerStub _messageHandlerStub;
+
     private readonly HttpClient _httpClient;
+
     private readonly Mock<ILoggerFactory> _mockLoggerFactory;
 
     public HunyuanTextGenerationTests()
@@ -13,7 +17,6 @@ public sealed class HunyuanTextGenerationTests : IDisposable
         this._httpClient = new HttpClient(this._messageHandlerStub, false);
         this._mockLoggerFactory = new Mock<ILoggerFactory>();
     }
-
 
     [Fact]
     public async Task GetChatMessageContentHandlesSettingCorrectlyAsync()
@@ -27,7 +30,6 @@ public sealed class HunyuanTextGenerationTests : IDisposable
             EnableEnhancement = true,
             Temperature = 0.9f,
             StreamModeration = true,
-            Stream = false,
             TopP = 0.3f
         };
 
@@ -54,7 +56,6 @@ public sealed class HunyuanTextGenerationTests : IDisposable
         Assert.Equal(0.9f, content.GetProperty("Temperature").GetSingle());
     }
 
-
     [Fact]
     public async Task GetStreamingTextContentsWorksCorrectlyAsync()
     {
@@ -62,7 +63,7 @@ public sealed class HunyuanTextGenerationTests : IDisposable
 
         HunyuanTestHelper.SetTestHttpClient(hunyuanChatCompletionService, this._httpClient);
 
-        using MemoryStream stream = new(Encoding.UTF8.GetBytes(HunyuanTestHelper.GetTestResponse("chat_generation_test_stream_response.txt")));
+        await using MemoryStream stream = new(Encoding.UTF8.GetBytes(HunyuanTestHelper.GetTestResponse("chat_generation_test_stream_response.txt")));
 
         HttpResponseMessage responseMessage = new(HttpStatusCode.OK)
         {
@@ -101,6 +102,7 @@ public sealed class HunyuanTextGenerationTests : IDisposable
 
         Assert.Equal("Hey there", contentBuilder.ToString());
     }
+
     public void Dispose()
     {
         this._messageHandlerStub.Dispose();

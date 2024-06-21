@@ -1,3 +1,5 @@
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
 namespace SemanticKernel.Connectors.Hunyuan.UnitTests;
 
 public class HunyuanPromptExecutionSettingsTests
@@ -21,7 +23,6 @@ public class HunyuanPromptExecutionSettingsTests
 
         Assert.NotNull(hunyuanPromptExecutionSettings);
     }
-
 
     [Fact]
     public void FromExecutionSettingsWhenDeserializeShouldReturnEqualValues()
@@ -74,7 +75,6 @@ public class HunyuanPromptExecutionSettingsTests
         Assert.Equal(executionSettings.TopP, clone.TopP);
         Assert.Equal(executionSettings.EnableEnhancement, clone.EnableEnhancement);
         Assert.Equal(executionSettings.StreamModeration, clone.StreamModeration);
-        Assert.Equal(executionSettings.Stream, clone.Stream);
         Assert.Equal(executionSettings.ChatSystemPrompt, clone.ChatSystemPrompt);
     }
 
@@ -87,7 +87,6 @@ public class HunyuanPromptExecutionSettingsTests
             "TopP": 0.4,
             "EnableEnhancement": true,
             "StreamModeration": false,
-            "Stream": false,
             "ChatSystemPrompt":null
         }
         """;

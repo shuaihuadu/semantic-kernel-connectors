@@ -1,16 +1,20 @@
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
 namespace SemanticKernel.Connectors.Hunyuan.UnitTests.Services;
 
 public class HunyuanTextEmbeddingGenerationServiceTests : IDisposable
 {
     private readonly HttpMessageHandlerStub _messageHandlerStub;
+
     private readonly HttpClient _httpClient;
+
     private readonly Mock<ILoggerFactory> _mockLoggerFactory;
 
     public HunyuanTextEmbeddingGenerationServiceTests()
     {
         this._messageHandlerStub = new HttpMessageHandlerStub();
         this._messageHandlerStub.ResponseToReturn.Content = new StringContent(HunyuanTestHelper.GetTestResponse("text_embedding_test_response.json"));
-        this._httpClient = new HttpClient(_messageHandlerStub, false);
+        this._httpClient = new HttpClient(this._messageHandlerStub, false);
         this._mockLoggerFactory = new Mock<ILoggerFactory>();
     }
 
@@ -42,7 +46,7 @@ public class HunyuanTextEmbeddingGenerationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task ShouldThrowKernelWhenEmbeddingIsNull()
+    public async Task ShouldThrowKernelWhenEmbeddingIsNullAsync()
     {
         HunyuanTextEmbeddingGenerationService hunyuanTextEmbeddingGenerationService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey);
 
@@ -56,7 +60,7 @@ public class HunyuanTextEmbeddingGenerationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task ShouldThrowKernelWhenEmbeddingElementIsNull()
+    public async Task ShouldThrowKernelWhenEmbeddingElementIsNullAsync()
     {
         HunyuanTextEmbeddingGenerationService hunyuanTextEmbeddingGenerationService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey);
 
@@ -70,7 +74,7 @@ public class HunyuanTextEmbeddingGenerationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task ShouldThrowKernelWhenEmbeddingCountNotEqual()
+    public async Task ShouldThrowKernelWhenEmbeddingCountNotEqualAsync()
     {
         HunyuanTextEmbeddingGenerationService hunyuanTextEmbeddingGenerationService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey);
 

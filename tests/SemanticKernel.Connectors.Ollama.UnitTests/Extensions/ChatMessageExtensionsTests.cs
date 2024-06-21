@@ -1,3 +1,5 @@
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
 namespace SemanticKernel.Connectors.Ollama.UnitTests.Extensions;
 
 public class ChatMessageExtensionsTests
@@ -6,8 +8,8 @@ public class ChatMessageExtensionsTests
     public void ChatMessageContentShouldConvertCorrectly()
     {
         ChatMessageContent message = new(AuthorRole.User, "Test");
-        message.Items.Add(new ImageContent(new ReadOnlyMemory<byte>([1, 2, 3])));
-        message.Items.Add(new ImageContent(new ReadOnlyMemory<byte>([4, 5, 6])));
+        message.Items.Add(new ImageContent(new ReadOnlyMemory<byte>([1, 2, 3]), "image/png"));
+        message.Items.Add(new ImageContent(new ReadOnlyMemory<byte>([4, 5, 6]), "image/png"));
 
         ChatMessage ollamaChatMessage = message.ToChatMessage();
 

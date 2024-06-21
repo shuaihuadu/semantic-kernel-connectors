@@ -287,6 +287,8 @@ public sealed class TestConfiguration
 
     public class HunyuanConfiguration
     {
+        public string Model { get; set; }
+
         public string SecretId { get; set; }
 
         public string SecretKey { get; set; }

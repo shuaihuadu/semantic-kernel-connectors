@@ -1,8 +1,10 @@
-﻿internal class MockIReadOnlyDictionary(IDictionary<string, object?> innerDictionary) : IReadOnlyDictionary<string, object?>
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+internal class MockIReadOnlyDictionary(IDictionary<string, object?> innerDictionary) : IReadOnlyDictionary<string, object?>
 {
     private readonly IDictionary<string, object?> _innerDictionary = innerDictionary;
 
-    public object? this[string key] => _innerDictionary[key];
+    public object? this[string key] => this._innerDictionary[key];
 
     public IEnumerable<string> Keys => this._innerDictionary.Keys;
 

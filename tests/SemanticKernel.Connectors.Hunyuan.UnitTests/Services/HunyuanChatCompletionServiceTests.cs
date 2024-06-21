@@ -1,16 +1,20 @@
+ï»¿// Copyright (c) IdeaTech. All rights reserved.
+
 namespace SemanticKernel.Connectors.Hunyuan.UnitTests.Services;
 
 public sealed class HunyuanChatCompletionServiceTests : IDisposable
 {
     private readonly HttpMessageHandlerStub _messageHandlerStub;
+
     private readonly HttpClient _httpClient;
+
     private readonly Mock<ILoggerFactory> _mockLoggerFactory;
 
     public HunyuanChatCompletionServiceTests()
     {
         this._messageHandlerStub = new HttpMessageHandlerStub();
         this._messageHandlerStub.ResponseToReturn.Content = new StringContent(HunyuanTestHelper.GetTestResponse("chat_completion_test_response.json"));
-        this._httpClient = new HttpClient(_messageHandlerStub, false);
+        this._httpClient = new HttpClient(this._messageHandlerStub, false);
         this._mockLoggerFactory = new Mock<ILoggerFactory>();
     }
 
@@ -38,7 +42,7 @@ public sealed class HunyuanChatCompletionServiceTests : IDisposable
 
         Assert.NotNull(chatMessageContents);
         Assert.True(chatMessageContents.Count > 0);
-        Assert.Equal("ÄãºÃ£¡ºÜ¸ßĞËÎªÄúÌá¹©°ïÖú£¬ÇëÎÊÄúÓĞÊ²Ã´ÎÊÌâ£¿", chatMessageContents[0].Content);
+        Assert.Equal("ä½ å¥½ï¼å¾ˆé«˜å…´ä¸ºæ‚¨æä¾›å¸®åŠ©ï¼Œè¯·é—®æ‚¨æœ‰ä»€ä¹ˆé—®é¢˜ï¼Ÿ", chatMessageContents[0].Content);
     }
 
     [Fact]
@@ -53,7 +57,6 @@ public sealed class HunyuanChatCompletionServiceTests : IDisposable
             EnableEnhancement = true,
             Temperature = 0.9f,
             StreamModeration = true,
-            Stream = false,
             TopP = 0.3f
         };
 
@@ -98,7 +101,6 @@ public sealed class HunyuanChatCompletionServiceTests : IDisposable
         Assert.Null(chatMessageContents[0].Metadata!["Usage"]);
     }
 
-
     [Fact]
     public async Task ShouldHandleMetadataAsync()
     {
@@ -119,10 +121,10 @@ public sealed class HunyuanChatCompletionServiceTests : IDisposable
 
         HunyuanChatCompletionMetadata? metadata = content.Metadata as HunyuanChatCompletionMetadata;
 
-        Assert.Equal("ÄãºÃ£¡ºÜ¸ßĞËÎªÄúÌá¹©°ïÖú£¬ÇëÎÊÄúÓĞÊ²Ã´ÎÊÌâ£¿", content.Content);
+        Assert.Equal("ä½ å¥½ï¼å¾ˆé«˜å…´ä¸ºæ‚¨æä¾›å¸®åŠ©ï¼Œè¯·é—®æ‚¨æœ‰ä»€ä¹ˆé—®é¢˜ï¼Ÿ", content.Content);
         Assert.Equal("22222222-d59f-42a1-90ed-b4956fb14650", metadata!.Id);
         Assert.Equal("11111111-d59f-42a1-90ed-b4956fb14650", metadata!.RequestId);
-        Assert.Equal("ÒÔÉÏÄÚÈİÎªAIÉú³É£¬²»´ú±í¿ª·¢ÕßÁ¢³¡£¬ÇëÎğÉ¾³ı»òĞŞ¸Ä±¾±ê¼Ç", metadata.Note);
+        Assert.Equal("ä»¥ä¸Šå†…å®¹ä¸ºAIç”Ÿæˆï¼Œä¸ä»£è¡¨å¼€å‘è€…ç«‹åœºï¼Œè¯·å‹¿åˆ é™¤æˆ–ä¿®æ”¹æœ¬æ ‡è®°", metadata.Note);
         Assert.Equal(1718297402L, metadata.Created);
         Assert.Equal("stop", metadata.FinishReason);
         Assert.Equal(3, metadata.Usage!.PromptTokens);
@@ -139,7 +141,7 @@ public sealed class HunyuanChatCompletionServiceTests : IDisposable
 
         HunyuanTestHelper.SetTestHttpClient(hunyuanChatCompletionService, this._httpClient);
 
-        using MemoryStream stream = new(Encoding.UTF8.GetBytes(HunyuanTestHelper.GetTestResponse("chat_generation_test_stream_response.txt")));
+        await using MemoryStream stream = new(Encoding.UTF8.GetBytes(HunyuanTestHelper.GetTestResponse("chat_generation_test_stream_response.txt")));
 
         HttpResponseMessage responseMessage = new(HttpStatusCode.OK)
         {
@@ -159,7 +161,6 @@ public sealed class HunyuanChatCompletionServiceTests : IDisposable
             EnableEnhancement = true,
             Temperature = 0.2f,
             StreamModeration = true,
-            Stream = false,
             TopP = 0.5f
         };
 
@@ -203,11 +204,10 @@ public sealed class HunyuanChatCompletionServiceTests : IDisposable
             EnableEnhancement = true,
             Temperature = 0.2f,
             StreamModeration = true,
-            Stream = false,
             TopP = 0.5f
         };
 
-        using MemoryStream stream = new(Encoding.UTF8.GetBytes(HunyuanTestHelper.GetTestResponse("chat_generation_test_stream_response.txt")));
+        await using MemoryStream stream = new(Encoding.UTF8.GetBytes(HunyuanTestHelper.GetTestResponse("chat_generation_test_stream_response.txt")));
 
         HttpResponseMessage responseMessage = new(HttpStatusCode.OK)
         {
@@ -247,13 +247,13 @@ public sealed class HunyuanChatCompletionServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetStreamingChatMessageContentsShouldThrow()
+    public async Task GetStreamingChatMessageContentsShouldThrowAsync()
     {
         HunyuanChatCompletionService hunyuanChatCompletionService = new(TestConstants.FakeModel, TestConstants.FakeSecretId, TestConstants.FakeSecretKey, 10, TestConstants.FakeRegion, TestConstants.FakeToken, loggerFactory: this._mockLoggerFactory.Object);
 
         HunyuanTestHelper.SetTestHttpClient(hunyuanChatCompletionService, this._httpClient);
 
-        using MemoryStream stream = new(Encoding.UTF8.GetBytes(HunyuanTestHelper.GetTestResponse("chat_generation_test_stream_invalid_response.txt")));
+        await using MemoryStream stream = new(Encoding.UTF8.GetBytes(HunyuanTestHelper.GetTestResponse("chat_generation_test_stream_invalid_response.txt")));
 
         HttpResponseMessage responseMessage = new(HttpStatusCode.OK)
         {
@@ -272,6 +272,7 @@ public sealed class HunyuanChatCompletionServiceTests : IDisposable
 
         Assert.Equal("Unexpected response from model", exception.Message);
     }
+
     public void Dispose()
     {
         this._messageHandlerStub.Dispose();

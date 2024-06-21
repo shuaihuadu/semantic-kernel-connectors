@@ -1,4 +1,6 @@
-﻿using Microsoft.SemanticKernel.TextGeneration;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+using Microsoft.SemanticKernel.TextGeneration;
 
 namespace Ollama.TextGeneration;
 
@@ -27,16 +29,16 @@ public class Ollama_TextGenerationStreaming(ITestOutputHelper output) : BaseTest
     {
         Console.WriteLine("======== Ollama - Text Generation - Streaming ========");
 
-        var textGeneration = new OllamaTextGenerationService(
+        OllamaTextGenerationService textGeneration = new(
             model: TestConfiguration.Ollama.ModelId,
             endpoint: TestConfiguration.Ollama.Endpoint);
 
-        return TextGenerationStreamAsync(textGeneration);
+        return this.TextGenerationStreamAsync(textGeneration);
     }
 
     private async Task TextGenerationStreamAsync(ITextGenerationService textGeneration)
     {
-        var executionSettings = new OllamaPromptExecutionSettings()
+        OllamaPromptExecutionSettings executionSettings = new()
         {
             MaxTokens = 100,
             FrequencyPenalty = 0,
@@ -45,11 +47,11 @@ public class Ollama_TextGenerationStreaming(ITestOutputHelper output) : BaseTest
             TopP = 0.5
         };
 
-        var prompt = "Write one paragraph why AI is awesome";
+        string prompt = "Write one paragraph why AI is awesome";
 
         Console.WriteLine("Prompt: " + prompt);
 
-        await foreach (var content in textGeneration.GetStreamingTextContentsAsync(prompt, executionSettings))
+        await foreach (StreamingTextContent? content in textGeneration.GetStreamingTextContentsAsync(prompt, executionSettings))
         {
             Console.Write(content);
         }

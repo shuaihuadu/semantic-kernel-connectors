@@ -6,12 +6,11 @@
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
-		<NoWarn>SKEXP0001;SKEXP0050</NoWarn>
+		<NoWarn>IDE0009;RCS1110;CA1050;CA1859;SKEXP0001;SKEXP0050</NoWarn>
 		<RootNamespace />
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="IdeaTech.SemanticKernel.Connectors.Hunyuan" Version="1.0.0" />
 		<PackageReference Include="IdeaTech.SemanticKernel.Connectors.Ollama" Version="1.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
@@ -52,6 +51,10 @@
 	  <EmbeddedResource Include="Ollama\Resources\test_image.jpg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\connectors\AI\SemanticKernel.Connectors.Hunyuan\SemanticKernel.Connectors.Hunyuan.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
