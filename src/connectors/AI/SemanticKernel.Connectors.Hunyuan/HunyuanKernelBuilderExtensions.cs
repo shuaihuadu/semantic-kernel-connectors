@@ -1,4 +1,6 @@
-﻿namespace Microsoft.SemanticKernel;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace Microsoft.SemanticKernel;
 
 /// <summary>
 /// Provides extension methods for the <see cref="IKernelBuilder"/> class to configure Hunyuan connectors.

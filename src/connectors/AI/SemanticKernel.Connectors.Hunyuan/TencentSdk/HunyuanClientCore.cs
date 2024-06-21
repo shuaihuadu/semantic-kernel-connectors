@@ -1,4 +1,6 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Hunyuan;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace IdeaTech.SemanticKernel.Connectors.Hunyuan;
 
 /// <summary>
 /// This class is responsible for making HTTP requests to the Hunyuan.
@@ -8,7 +10,9 @@ internal sealed class HunyuanClientCore
     private const string ModelProvider = "Hunyuan";
 
     private readonly string _model;
+
     private readonly ILogger _logger;
+
     private readonly HunyuanClient _client;
 
     internal HunyuanClientCore(string model, Credential credential, string region, ClientProfile clientProfile, ILogger logger)
@@ -32,12 +36,10 @@ internal sealed class HunyuanClientCore
         string model = executionSettings?.ModelId ?? this._model;
 
         HunyuanPromptExecutionSettings hunyuanPromptExecutionSettings = HunyuanPromptExecutionSettings.FromExecutionSettings(executionSettings);
-        hunyuanPromptExecutionSettings.ModelId ??= this._model;
-        hunyuanPromptExecutionSettings.Stream = false;
 
         using var activity = ModelDiagnostics.StartCompletionActivity(this.GetChatGenerationEndpoint(), model, ModelProvider, chatHistory, hunyuanPromptExecutionSettings);
 
-        ChatCompletionsRequest request = this.CreateChatRequest(chatHistory, hunyuanPromptExecutionSettings);
+        ChatCompletionsRequest request = this.CreateChatRequest(chatHistory, hunyuanPromptExecutionSettings, this._model, false);
 
         ChatCompletionsResponse response;
 
@@ -68,12 +70,10 @@ internal sealed class HunyuanClientCore
         string model = executionSettings?.ModelId ?? this._model;
 
         HunyuanPromptExecutionSettings hunyuanPromptExecutionSettings = HunyuanPromptExecutionSettings.FromExecutionSettings(executionSettings);
-        hunyuanPromptExecutionSettings.ModelId ??= this._model;
-        hunyuanPromptExecutionSettings.Stream = true;
 
         using var activity = ModelDiagnostics.StartCompletionActivity(this.GetChatGenerationEndpoint(), model, ModelProvider, chatHistory, hunyuanPromptExecutionSettings);
 
-        ChatCompletionsRequest request = this.CreateChatRequest(chatHistory, hunyuanPromptExecutionSettings);
+        ChatCompletionsRequest request = this.CreateChatRequest(chatHistory, hunyuanPromptExecutionSettings, this._model, true);
 
         ChatCompletionsResponse response;
 
@@ -201,10 +201,8 @@ internal sealed class HunyuanClientCore
                 {
                     throw new KernelException("The result of the embedding contains null elements.");
                 }
-                else
-                {
-                    result.Add(new ReadOnlyMemory<float>(embeddings.Select(x => x!.Value).ToArray()));
-                }
+
+                result.Add(new ReadOnlyMemory<float>(embeddings.Select(x => x!.Value).ToArray()));
             }
             else
             {
@@ -219,7 +217,7 @@ internal sealed class HunyuanClientCore
     {
         List<ChatMessageContent> chatMessageContents = [];
 
-        foreach (var choice in response.Choices)
+        foreach (Choice? choice in response.Choices)
         {
             HunyuanChatCompletionMetadata metadata = new()
             {
@@ -241,35 +239,38 @@ internal sealed class HunyuanClientCore
                 encoding: Encoding.UTF8,
                 metadata: metadata));
         }
+
         return chatMessageContents;
     }
 
-    private ChatCompletionsRequest CreateChatRequest(ChatHistory chatHistory, HunyuanPromptExecutionSettings hunyuanFaceExecutionSettings)
+    private ChatCompletionsRequest CreateChatRequest(ChatHistory chatHistory, HunyuanPromptExecutionSettings hunyuanFaceExecutionSettings, string modelId, bool stream)
     {
         this._logger.LogTrace("ChatHistory: {ChatHistory}, Settings: {Settings}",
             JsonSerializer.Serialize(chatHistory),
             JsonSerializer.Serialize(hunyuanFaceExecutionSettings));
 
-        ChatCompletionsRequest request = FromChatHistoryAndExecutionSettings(chatHistory, hunyuanFaceExecutionSettings);
+        ChatCompletionsRequest request = FromChatHistoryAndExecutionSettings(chatHistory, hunyuanFaceExecutionSettings, modelId, stream);
 
         return request;
     }
 
-    private static ChatCompletionsRequest FromChatHistoryAndExecutionSettings(ChatHistory chatHistory, HunyuanPromptExecutionSettings executionSettings)
+    private static ChatCompletionsRequest FromChatHistoryAndExecutionSettings(ChatHistory chatHistory, HunyuanPromptExecutionSettings executionSettings, string modelId, bool stream)
     {
         return new ChatCompletionsRequest
         {
-            Messages = chatHistory.Select(message => new Message
-            {
-                Content = message.Content,
-                Role = message.Role.ToString(),
-            }).ToArray(),
+            Messages = chatHistory
+                .Select(message => new Message
+                {
+                    Content = message.Content,
+                    Role = message.Role.ToString(),
+                })
+                .ToArray(),
             Temperature = executionSettings.Temperature,
-            Model = executionSettings.ModelId,
+            Model = executionSettings.ModelId ?? modelId,
             TopP = executionSettings.TopP,
             EnableEnhancement = executionSettings.EnableEnhancement,
             StreamModeration = executionSettings.StreamModeration,
-            Stream = executionSettings.Stream
+            Stream = stream
         };
     }
 
@@ -365,7 +366,6 @@ internal sealed class HunyuanClientCore
         completionTokensCounter.Add(chatCompletionResponse.Usage.CompletionTokens ?? 0);
         totalTokensCounter.Add(chatCompletionResponse.Usage.TotalTokens ?? 0);
     }
-
 
     private static readonly string @namespace = typeof(HunyuanChatCompletionService).Namespace!;
 

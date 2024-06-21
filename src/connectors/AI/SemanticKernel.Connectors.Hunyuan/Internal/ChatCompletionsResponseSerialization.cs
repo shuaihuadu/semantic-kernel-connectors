@@ -1,6 +1,8 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Hunyuan;
+﻿// Copyright (c) IdeaTech. All rights reserved.
 
-internal class ChatCompletionsResponseSerialization
+namespace IdeaTech.SemanticKernel.Connectors.Hunyuan;
+
+internal static class ChatCompletionsResponseSerialization
 {
     internal static ChatCompletionsResponse? DeserializeChatCompletionsResponse(JsonElement element)
     {
@@ -16,7 +18,7 @@ internal class ChatCompletionsResponseSerialization
         Choice[] choices = [];
         ErrorMsg? errorMsg = default;
 
-        foreach (var property in element.EnumerateObject())
+        foreach (JsonProperty property in element.EnumerateObject())
         {
             if (property.NameEquals("Id"u8))
             {
@@ -33,7 +35,7 @@ internal class ChatCompletionsResponseSerialization
 
                 List<Choice> array = [];
 
-                foreach (var item in property.Value.EnumerateArray())
+                foreach (JsonElement item in property.Value.EnumerateArray())
                 {
                     Choice? choice = DeserializeChatCompletionsResponseChoice(item);
 
@@ -42,6 +44,7 @@ internal class ChatCompletionsResponseSerialization
                         array.Add(choice);
                     }
                 }
+
                 choices = [.. array];
                 continue;
             }
@@ -64,6 +67,7 @@ internal class ChatCompletionsResponseSerialization
                 {
                     continue;
                 }
+
                 usage = DeserializeChatCompletionsResponseUsage(property.Value);
                 continue;
             }
@@ -74,8 +78,8 @@ internal class ChatCompletionsResponseSerialization
                 {
                     continue;
                 }
+
                 errorMsg = DeserializeChatCompletionsResponseErrorMsg(property.Value);
-                continue;
             }
         }
 
@@ -119,7 +123,6 @@ internal class ChatCompletionsResponseSerialization
                 }
 
                 finishReason = property.Value.GetString();
-                continue;
             }
         }
 
@@ -135,7 +138,7 @@ internal class ChatCompletionsResponseSerialization
 
         string? content = default, role = default;
 
-        foreach (var property in element.EnumerateObject())
+        foreach (JsonProperty property in element.EnumerateObject())
         {
             if (property.NameEquals("Content"u8))
             {
@@ -147,14 +150,15 @@ internal class ChatCompletionsResponseSerialization
                 content = property.Value.GetString();
                 continue;
             }
+
             if (property.NameEquals("Role"u8))
             {
                 if (property.Value.ValueKind == JsonValueKind.Null)
                 {
                     continue;
                 }
+
                 role = property.Value.GetString();
-                continue;
             }
         }
 
@@ -170,7 +174,7 @@ internal class ChatCompletionsResponseSerialization
 
         int promptTokens = default, completionTokens = default, totalTokens = default;
 
-        foreach (var property in element.EnumerateObject())
+        foreach (JsonProperty property in element.EnumerateObject())
         {
             if (property.NameEquals("PromptTokens"u8))
             {
@@ -202,7 +206,6 @@ internal class ChatCompletionsResponseSerialization
                 }
 
                 totalTokens = property.Value.GetInt32();
-                continue;
             }
         }
 
@@ -219,7 +222,7 @@ internal class ChatCompletionsResponseSerialization
         long code = default;
         string? msg = default;
 
-        foreach (var property in element.EnumerateObject())
+        foreach (JsonProperty property in element.EnumerateObject())
         {
             if (property.NameEquals("Code"u8))
             {
@@ -231,14 +234,15 @@ internal class ChatCompletionsResponseSerialization
                 code = property.Value.GetInt64();
                 continue;
             }
+
             if (property.NameEquals("Msg"u8))
             {
                 if (property.Value.ValueKind == JsonValueKind.Null)
                 {
                     continue;
                 }
+
                 msg = property.Value.GetString();
-                continue;
             }
         }
 

@@ -1,13 +1,19 @@
-﻿namespace IdeaTech.SemanticKernel.Connectors.Hunyuan;
+﻿// Copyright (c) IdeaTech. All rights reserved.
+
+namespace IdeaTech.SemanticKernel.Connectors.Hunyuan;
 
 /// <summary>
 /// Represents the metadata of a Hunyuan chat completion.
 /// </summary>
 public sealed class HunyuanChatCompletionMetadata : ReadOnlyDictionary<string, object?>
 {
-    internal HunyuanChatCompletionMetadata() : base(new Dictionary<string, object?>()) { }
+    internal HunyuanChatCompletionMetadata() : base(new Dictionary<string, object?>())
+    {
+    }
 
-    private HunyuanChatCompletionMetadata(IDictionary<string, object?> dictionary) : base(dictionary) { }
+    private HunyuanChatCompletionMetadata(IDictionary<string, object?> dictionary) : base(dictionary)
+    {
+    }
 
     /// <summary>
     /// Unix 时间戳，单位为秒。
@@ -98,5 +104,5 @@ public sealed class HunyuanChatCompletionMetadata : ReadOnlyDictionary<string, o
 
     private void SetValueInDictionary(object? value, string propertyName) => this.Dictionary[propertyName] = value;
 
-    private object? GetValueFromDictionary(string propertyName) => this.Dictionary.TryGetValue(propertyName, out var value) ? value : null;
+    private object? GetValueFromDictionary(string propertyName) => this.Dictionary.TryGetValue(propertyName, out object? value) ? value : null;
 }
