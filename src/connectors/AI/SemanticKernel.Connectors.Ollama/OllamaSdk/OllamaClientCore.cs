@@ -361,7 +361,7 @@ internal sealed class OllamaClientCore
     {
         return new GenerateCompletionOptions
         {
-            Model = model,
+            Model = ollamaPromptExecutionSettings.ModelId ?? model,
             Prompt = prompt,
             Format = ollamaPromptExecutionSettings.Format,
             KeepAlive = ollamaPromptExecutionSettings.KeepAlive,
@@ -398,7 +398,7 @@ internal sealed class OllamaClientCore
     {
         return new ChatCompletionOptions
         {
-            Model = model,
+            Model = ollamaPromptExecutionSettings.ModelId ?? model,
             Messages = [.. chatHistory.Select(message => message.ToChatMessage())],
             Format = ollamaPromptExecutionSettings.Format,
             KeepAlive = ollamaPromptExecutionSettings.KeepAlive,
