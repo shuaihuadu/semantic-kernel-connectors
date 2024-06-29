@@ -1,6 +1,6 @@
 ﻿// Copyright (c) IdeaTech. All rights reserved.
 
-internal class MockIReadOnlyDictionary(IDictionary<string, object?> innerDictionary) : IReadOnlyDictionary<string, object?>
+internal sealed class MockIReadOnlyDictionary(IDictionary<string, object?> innerDictionary) : IReadOnlyDictionary<string, object?>
 {
     private readonly IDictionary<string, object?> _innerDictionary = innerDictionary;
 

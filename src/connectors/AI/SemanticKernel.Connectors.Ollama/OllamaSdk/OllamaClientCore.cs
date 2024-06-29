@@ -24,9 +24,9 @@ internal sealed class OllamaClientCore
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     internal OllamaClientCore(string model, Uri endpoint, ILoggerFactory? loggerFactory = null)
     {
-        Verify.NotNullOrWhiteSpace(model, nameof(model));
-        Verify.NotNull(endpoint, nameof(endpoint));
-        Verify.NotNullOrWhiteSpace(endpoint.AbsoluteUri, nameof(endpoint.AbsoluteUri));
+        Verify.NotNullOrWhiteSpace(model);
+        Verify.NotNull(endpoint);
+        Verify.NotNullOrWhiteSpace(endpoint.AbsoluteUri);
 
         this._model = model;
         this._client = new OllamaClient(endpoint, loggerFactory);
@@ -52,10 +52,10 @@ internal sealed class OllamaClientCore
     /// <param name="loggerFactory">Optional logger factory to be used for logging.</param>
     internal OllamaClientCore(string model, HttpClient httpClient, ILoggerFactory? loggerFactory = null)
     {
-        Verify.NotNullOrWhiteSpace(model, nameof(model));
-        Verify.NotNull(httpClient, nameof(httpClient));
-        Verify.NotNull(httpClient.BaseAddress, nameof(httpClient.BaseAddress));
-        Verify.NotNullOrWhiteSpace(httpClient.BaseAddress.AbsoluteUri, nameof(httpClient.BaseAddress.AbsoluteUri));
+        Verify.NotNullOrWhiteSpace(model);
+        Verify.NotNull(httpClient);
+        Verify.NotNull(httpClient.BaseAddress);
+        Verify.NotNullOrWhiteSpace(httpClient.BaseAddress.AbsoluteUri);
 
         this._model = model;
         this._client = new OllamaClient(httpClient, loggerFactory);
@@ -247,14 +247,14 @@ internal sealed class OllamaClientCore
 
     internal async Task<IList<ReadOnlyMemory<float>>> GenerateEmbeddingsAsync(IList<string> data, CancellationToken cancellationToken)
     {
-        Verify.NotNullOrEmpty(data, nameof(data));
+        Verify.NotNullOrEmpty(data);
 
         if (data.Count != 1)
         {
             throw new NotSupportedException("Currently this interface does not support multiple embeddings results per data item, use only one data item");
         }
 
-        EmbeddingResponse response = await this._client.GenerateEmbeddingAsync(this._model, data.First(), cancellationToken);
+        EmbeddingResponse response = await this._client.GenerateEmbeddingAsync(this._model, data[0], cancellationToken);
 
         return [response.Embedding];
     }
@@ -265,9 +265,9 @@ internal sealed class OllamaClientCore
 
     internal async Task<IReadOnlyList<TextContent>> GenerateTextFromImageAsync(ImageContent content, PromptExecutionSettings? executionSettings, CancellationToken cancellationToken)
     {
-        Verify.NotNull(content, nameof(content));
-        Verify.NotNull(content.Data, nameof(content.Data));
-        Verify.NotNullOrEmpty(content.Data.Value.ToArray(), nameof(content.Data));
+        Verify.NotNull(content);
+        Verify.NotNull(content.Data);
+        Verify.NotNullOrEmpty(content.Data.Value.ToArray());
 
         string prompt = "What is in this image?";
 
