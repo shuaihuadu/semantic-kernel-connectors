@@ -19,7 +19,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.15.0" />
+		<PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.15.1" />
 		<PackageReference Include="Ollama.NET" Version="1.0.6" />
 	</ItemGroup>
 
