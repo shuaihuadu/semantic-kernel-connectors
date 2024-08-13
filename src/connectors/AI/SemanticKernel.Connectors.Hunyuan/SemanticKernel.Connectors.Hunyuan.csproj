@@ -26,7 +26,7 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.17.1" />
-		<PackageReference Include="TencentCloudSDK.Hunyuan" Version="3.0.1065" />
+		<PackageReference Include="TencentCloudSDK.Hunyuan" Version="3.0.1067" />
 	</ItemGroup>
 	<ItemGroup>
 		<InternalsVisibleTo Include="SemanticKernel.Connectors.UnitTests" />
